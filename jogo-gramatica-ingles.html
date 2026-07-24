@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Quest — Jogo de gramática inglesa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F4EC;
+    --ink: #17163B;
+    --ink-soft: #55547A;
+    --card: #FFFFFF;
+    --tobe: #2447F5;
+    --tobe-soft: #DDE4FE;
+    --presimple: #F5A623;
+    --presimple-soft: #FCEBCB;
+    --pastsimple: #D6482B;
+    --pastsimple-soft: #F8DCD4;
+    --precont: #14957A;
+    --precont-soft: #D3EEE7;
+    --pastcont: #8B44D6;
+    --pastcont-soft: #E9DCF8;
+    --mix: #17163B;
+    --mix-soft: #E2E1EE;
+    --ok: #14957A;
+    --ok-soft: #D3EEE7;
+    --bad: #D6482B;
+    --bad-soft: #F8DCD4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    background-image: radial-gradient(#17163B0D 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .wrap { width: 100%; max-width: 520px; }
+  h1, h2, .display { font-family: 'Bricolage Grotesque', sans-serif; }
+  header { text-align: center; margin-bottom: 28px; }
+  .logo {
+    display: inline-block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  header h1 { font-size: clamp(30px, 7vw, 40px); font-weight: 800; line-height: 1.1; }
+  header h1 em { font-style: normal; color: var(--tobe); }
+  header p { color: var(--ink-soft); font-size: 15px; margin-top: 8px; }
+
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic {
+    border: 2.5px solid var(--ink);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 16px 14px 14px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .12s ease, box-shadow .12s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 104px;
+  }
+  .topic:hover, .topic:focus-visible { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .topic:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+  .topic .dot { width: 26px; height: 26px; border-radius: 8px; border: 2.5px solid var(--ink); }
+  .topic .tname { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 16px; line-height: 1.2; }
+  .topic .tsub { font-size: 12px; color: var(--ink-soft); }
+  .topic.mix { grid-column: 1 / -1; flex-direction: row; align-items: center; }
+  .topic.mix .dot { background: repeating-linear-gradient(45deg, var(--tobe) 0 6px, var(--presimple) 6px 12px, var(--precont) 12px 18px, var(--pastcont) 18px 24px); }
+
+  .hidden { display: none !important; }
+
+  .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+  .hud .tense-badge {
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 12px;
+    padding: 5px 12px; border-radius: 999px; border: 2px solid var(--ink);
+  }
+  .hud .score { font-weight: 600; color: var(--ink-soft); }
+  .bar { height: 10px; border: 2px solid var(--ink); border-radius: 999px; background: var(--card); overflow: hidden; margin-bottom: 22px; }
+  .bar > div { height: 100%; width: 0%; background: var(--ink); border-radius: 999px; transition: width .3s ease; }
+
+  .qcard {
+    background: var(--card);
+    border: 2.5px solid var(--ink);
+    border-radius: 20px;
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 26px 22px 22px;
+    animation: slideIn .3s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .qcard { animation: none; }
+    .topic, .opt, .btn { transition: none; }
+  }
+  .qtext { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: clamp(20px, 5vw, 24px); line-height: 1.35; margin-bottom: 20px; }
+  .qtext .blank { border-bottom: 3px solid currentColor; padding: 0 18px; }
+
+  .opts { display: grid; gap: 10px; }
+  .opt {
+    font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 600;
+    text-align: left; padding: 13px 16px;
+    border: 2px solid var(--ink); border-radius: 12px;
+    background: var(--paper); color: var(--ink); cursor: pointer;
+    transition: transform .1s ease, background .15s ease;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .opt .key {
+    width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; background: var(--card);
+  }
+  .opt:hover:not(:disabled), .opt:focus-visible:not(:disabled) { transform: translateX(3px); }
+  .opt:disabled { cursor: default; }
+  .opt.correct { background: var(--ok-soft); border-color: var(--ok); color: var(--ink); }
+  .opt.correct .key { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+  .opt.wrong .key { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .opt.faded { opacity: .45; }
+
+  .feedback {
+    margin-top: 18px; border-radius: 12px; padding: 14px 16px;
+    border: 2px solid; font-size: 14px; line-height: 1.55;
+    animation: slideIn .25s ease;
+  }
+  .feedback.good { background: var(--ok-soft); border-color: var(--ok); }
+  .feedback.bad { background: var(--bad-soft); border-color: var(--bad); }
+  .feedback strong { font-family: 'Bricolage Grotesque', sans-serif; display: block; margin-bottom: 4px; font-size: 15px; }
+  .streak { display: inline-block; margin-left: 6px; font-weight: 700; }
+
+  .btn {
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 16px;
+    background: var(--ink); color: var(--paper);
+    border: 2.5px solid var(--ink); border-radius: 12px;
+    padding: 14px 20px; width: 100%; cursor: pointer; margin-top: 16px;
+    box-shadow: 4px 4px 0 rgba(23,22,59,.25);
+    transition: transform .12s ease;
+  }
+  .btn:hover, .btn:focus-visible { transform: translate(-1px,-1px); }
+  .btn:active { transform: translate(1px,1px); }
+  .btn.ghost { background: var(--card); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+
+  .result { text-align: center; }
+  .result .bignum { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 64px; line-height: 1; }
+  .result .bignum small { font-size: 24px; color: var(--ink-soft); font-weight: 700; }
+  .result .msg { margin: 10px 0 4px; font-size: 17px; font-weight: 600; }
+  .result .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 20px; }
+  .medal {
+    width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--ink);
+    margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 34px; box-shadow: 4px 4px 0 var(--ink); background: var(--card);
+  }
+  .review { text-align: left; margin-top: 26px; }
+  .review h2 { font-size: 17px; margin-bottom: 10px; }
+  .review-item {
+    border: 2px solid var(--ink); border-radius: 12px; background: var(--card);
+    padding: 12px 14px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.5;
+  }
+  .review-item .ans { font-weight: 700; color: var(--ok); }
+  footer { margin-top: 36px; text-align: center; font-size: 12px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="logo">Grammar Quest</span>
+    <h1>Domine os tempos verbais em <em>inglês</em></h1>
+    <p id="subtitle">Escolha um tema e responda às perguntas. Boa sorte!</p>
+  </header>
+
+  <section id="menu" class="topics" aria-label="Escolha um tema"></section>
+
+  <section id="game" class="hidden" aria-live="polite">
+    <div class="hud">
+      <span class="tense-badge" id="badge"></span>
+      <span class="score" id="hudScore"></span>
+    </div>
+    <div class="bar"><div id="barFill"></div></div>
+    <div class="qcard">
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div id="feedback"></div>
+      <button class="btn hidden" id="nextBtn"></button>
+    </div>
+  </section>
+
+  <section id="result" class="hidden">
+    <div class="qcard result">
+      <div class="medal" id="medal"></div>
+      <div class="bignum"><span id="finalScore"></span><small id="finalTotal"></small></div>
+      <p class="msg" id="finalMsg"></p>
+      <p class="sub" id="finalSub"></p>
+      <button class="btn" id="againBtn">Jogar de novo</button>
+      <button class="btn ghost" id="menuBtn">Escolher outro tema</button>
+      <div class="review" id="review"></div>
+    </div>
+  </section>
+
+  <footer>Feito para praticar: verb to be · present simple · past simple · present continuous · past continuous</footer>
+</div>
+
+<script>
+const TOPICS = [
+  { id: "tobe", name: "Verbo to be", sub: "am · is · are · was · were", color: "var(--tobe)", soft: "var(--tobe-soft)" },
+  { id: "presimple", name: "Present simple", sub: "rotinas e fatos", color: "var(--presimple)", soft: "var(--presimple-soft)" },
+  { id: "pastsimple", name: "Past simple", sub: "ações concluídas", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
+  { id: "precont", name: "Present continuous", sub: "acontecendo agora", color: "var(--precont)", soft: "var(--precont-soft)" },
+  { id: "pastcont", name: "Past continuous", sub: "em progresso no passado", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
+  { id: "mix", name: "Modo misto", sub: "12 perguntas de todos os temas", color: "var(--mix)", soft: "var(--mix-soft)" }
+];
+
+const QUESTIONS = {
+  tobe: [
+    { q: "She ___ a doctor.", opts: ["is", "are", "am", "be"], a: 0, ex: "'She' usa 'is': She is a doctor." },
+    { q: "They ___ my friends.", opts: ["is", "are", "am", "was"], a: 1, ex: "'They' (plural) usa 'are'." },
+    { q: "I ___ very happy today.", opts: ["is", "are", "am", "be"], a: 2, ex: "'I' sempre usa 'am'." },
+    { q: "___ you a student?", opts: ["Is", "Are", "Am", "Be"], a: 1, ex: "Pergunta com 'you' usa 'Are'." },
+    { q: "We ___ at home yesterday.", opts: ["was", "are", "were", "is"], a: 2, ex: "'We' no passado usa 'were'." },
+    { q: "He ___ tired last night.", opts: ["were", "is", "are", "was"], a: 3, ex: "'He' no passado usa 'was'." },
+    { q: "The books ___ on the table.", opts: ["is", "are", "am", "was"], a: 1, ex: "'The books' (plural) usa 'are'." },
+    { q: "It ___ not cold today.", opts: ["are", "am", "is", "were"], a: 2, ex: "'It' usa 'is': It is not (isn't) cold." },
+    { q: "My parents ___ at the party last week.", opts: ["was", "is", "were", "are"], a: 2, ex: "'My parents' (plural) no passado usa 'were'." },
+    { q: "___ she your teacher?", opts: ["Are", "Is", "Am", "Were"], a: 1, ex: "Pergunta com 'she' no presente usa 'Is'." }
+  ],
+  presimple: [
+    { q: "She ___ to school every day.", opts: ["go", "goes", "going", "went"], a: 1, ex: "3ª pessoa do singular (she/he/it) recebe -es: goes." },
+    { q: "They ___ soccer on Sundays.", opts: ["plays", "play", "playing", "played"], a: 1, ex: "'They' usa a forma base: play." },
+    { q: "He ___ like coffee.", opts: ["don't", "doesn't", "isn't", "not"], a: 1, ex: "Negativa com 'he' usa 'doesn't' + verbo base." },
+    { q: "___ you speak English?", opts: ["Does", "Are", "Do", "Is"], a: 2, ex: "Pergunta com 'you' usa 'Do'." },
+    { q: "My mother ___ dinner at 7 PM.", opts: ["cook", "cooks", "cooking", "is cook"], a: 1, ex: "'My mother' = she, então 'cooks'." },
+    { q: "Water ___ at 100°C.", opts: ["boil", "boils", "boiling", "is boil"], a: 1, ex: "Fatos científicos usam present simple: boils." },
+    { q: "___ she work in a hospital?", opts: ["Do", "Is", "Are", "Does"], a: 3, ex: "Pergunta com 'she' usa 'Does' + verbo base." },
+    { q: "I ___ TV in the morning.", opts: ["don't watch", "doesn't watch", "not watch", "am not watch"], a: 0, ex: "Negativa com 'I' usa 'don't' + verbo base." },
+    { q: "The bank ___ at 9 AM.", opts: ["open", "opens", "opening", "is open"], a: 1, ex: "'The bank' = it, então 'opens'. Horários fixos usam present simple." },
+    { q: "We ___ our grandparents every weekend.", opts: ["visits", "visiting", "visit", "are visit"], a: 2, ex: "'We' usa a forma base: visit." }
+  ],
+  pastsimple: [
+    { q: "She ___ to the park yesterday.", opts: ["go", "goes", "went", "gone"], a: 2, ex: "'Go' é irregular: o passado é 'went'." },
+    { q: "They ___ a movie last night.", opts: ["watch", "watched", "watching", "watches"], a: 1, ex: "Verbo regular: watch + ed = watched." },
+    { q: "He ___ his keys this morning.", opts: ["lose", "losed", "lost", "loses"], a: 2, ex: "'Lose' é irregular: lost." },
+    { q: "___ you visit your grandmother?", opts: ["Do", "Does", "Did", "Was"], a: 2, ex: "Perguntas no passado usam 'Did' + verbo base." },
+    { q: "I ___ breakfast at 8 AM.", opts: ["eat", "ate", "eaten", "eats"], a: 1, ex: "'Eat' é irregular: ate." },
+    { q: "We ___ go to the beach last summer.", opts: ["don't", "doesn't", "didn't", "wasn't"], a: 2, ex: "Negativa no passado: didn't + verbo base." },
+    { q: "She ___ a beautiful song.", opts: ["sing", "sang", "sung", "sings"], a: 1, ex: "'Sing' é irregular: sang." },
+    { q: "They ___ in London in 2010.", opts: ["live", "lives", "lived", "living"], a: 2, ex: "Verbo regular: live + d = lived." },
+    { q: "He ___ a new car last month.", opts: ["buy", "buyed", "bought", "buys"], a: 2, ex: "'Buy' é irregular: bought." },
+    { q: "What ___ you do yesterday?", opts: ["do", "did", "does", "was"], a: 1, ex: "Perguntas no passado: What did you do?" }
+  ],
+  precont: [
+    { q: "She ___ a book right now.", opts: ["reads", "is reading", "read", "reading"], a: 1, ex: "Ação acontecendo agora: is + verbo-ing." },
+    { q: "They ___ soccer at the moment.", opts: ["is playing", "plays", "are playing", "play"], a: 2, ex: "'They' usa 'are' + playing." },
+    { q: "I ___ for the bus.", opts: ["am waiting", "is waiting", "waiting", "waits"], a: 0, ex: "'I' usa 'am' + waiting." },
+    { q: "___ you listening to me?", opts: ["Do", "Is", "Are", "Does"], a: 2, ex: "Pergunta no present continuous: Are you + verbo-ing?" },
+    { q: "He ___ TV now.", opts: ["isn't watching", "don't watch", "not watching", "doesn't watching"], a: 0, ex: "Negativa: is not (isn't) + watching." },
+    { q: "Look! It ___.", opts: ["rains", "is raining", "rained", "raining"], a: 1, ex: "'Look!' indica ação em progresso: is raining." },
+    { q: "We ___ dinner at the moment.", opts: ["cook", "cooks", "are cooking", "is cooking"], a: 2, ex: "'We' usa 'are' + cooking." },
+    { q: "The baby ___ right now.", opts: ["sleep", "sleeps", "is sleeping", "are sleeping"], a: 2, ex: "'The baby' = it, então 'is sleeping'." },
+    { q: "Listen! Someone ___ the piano.", opts: ["plays", "is playing", "play", "played"], a: 1, ex: "'Listen!' indica ação agora: is playing." },
+    { q: "Why ___ you crying?", opts: ["do", "is", "are", "does"], a: 2, ex: "'You' usa 'are': Why are you crying?" }
+  ],
+  pastcont: [
+    { q: "She ___ when I called her.", opts: ["studies", "was studying", "is studying", "studied"], a: 1, ex: "Ação em progresso no passado: was + studying." },
+    { q: "They ___ TV at 8 PM yesterday.", opts: ["was watching", "watched", "were watching", "are watching"], a: 2, ex: "'They' usa 'were' + watching." },
+    { q: "I ___ when the phone rang.", opts: ["was sleeping", "slept", "am sleeping", "were sleeping"], a: 0, ex: "'I' no passado contínuo usa 'was' + sleeping." },
+    { q: "___ you working at 10 PM?", opts: ["Did", "Was", "Are", "Were"], a: 3, ex: "Pergunta com 'you': Were you + verbo-ing?" },
+    { q: "He ___ attention in class.", opts: ["wasn't paying", "didn't paying", "isn't paying", "weren't paying"], a: 0, ex: "Negativa com 'he': wasn't + paying." },
+    { q: "While we ___, it started to rain.", opts: ["walk", "are walking", "were walking", "walks"], a: 2, ex: "'While' + ação longa no passado: were walking." },
+    { q: "What ___ you doing at midnight?", opts: ["was", "did", "were", "are"], a: 2, ex: "'You' usa 'were': What were you doing?" },
+    { q: "The children ___ in the garden all afternoon.", opts: ["was playing", "were playing", "played playing", "are playing"], a: 1, ex: "'The children' (plural) usa 'were' + playing." },
+    { q: "It ___ when we left the house.", opts: ["was snowing", "snows", "is snowing", "were snowing"], a: 0, ex: "'It' usa 'was' + snowing." },
+    { q: "While she ___, he was washing the dishes.", opts: ["cooks", "was cooking", "is cooking", "cooked"], a: 1, ex: "Duas ações simultâneas no passado: was cooking / was washing." }
+  ]
+};
+
+let state = { topic: null, qs: [], idx: 0, score: 0, streak: 0, best: 0, wrongs: [] };
+
+const $ = id => document.getElementById(id);
+const menu = $("menu"), game = $("game"), result = $("result");
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function topicOf(id) { return TOPICS.find(t => t.id === id); }
+
+function renderMenu() {
+  menu.innerHTML = TOPICS.map(t => `
+    <button class="topic ${t.id === "mix" ? "mix" : ""}" data-id="${t.id}">
+      <span class="dot" style="background:${t.id === "mix" ? "" : t.soft}; ${t.id !== "mix" ? "border-color:" + t.color : ""}"></span>
+      <span><span class="tname" style="display:block">${t.name}</span>
+      <span class="tsub">${t.sub}</span></span>
+    </button>`).join("");
+  menu.querySelectorAll(".topic").forEach(btn =>
+    btn.addEventListener("click", () => start(btn.dataset.id)));
+}
+
+function start(topicId) {
+  let pool;
+  if (topicId === "mix") {
+    pool = shuffle(Object.entries(QUESTIONS).flatMap(([k, qs]) =>
+      qs.map(q => ({ ...q, cat: k })))).slice(0, 12);
+  } else {
+    pool = shuffle(QUESTIONS[topicId].map(q => ({ ...q, cat: topicId })));
+  }
+  state = { topic: topicId, qs: pool, idx: 0, score: 0, streak: 0, best: 0, wrongs: [] };
+  menu.classList.add("hidden");
+  result.classList.add("hidden");
+  $("subtitle").textContent = topicId === "mix" ? "Modo misto — todos os temas embaralhados" : topicOf(topicId).sub;
+  game.classList.remove("hidden");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.qs[state.idx];
+  const t = topicOf(q.cat);
+  $("badge").textContent = t.name;
+  $("badge").style.background = t.soft;
+  $("badge").style.color = "var(--ink)";
+  $("hudScore").textContent = `Pergunta ${state.idx + 1} de ${state.qs.length} · ⭐ ${state.score}`;
+  $("barFill").style.width = Math.round((state.idx / state.qs.length) * 100) + "%";
+  $("barFill").style.background = t.color;
+  $("qtext").innerHTML = q.q.replace("___", '<span class="blank">&nbsp;</span>');
+  $("feedback").innerHTML = "";
+  $("nextBtn").classList.add("hidden");
+
+  const letters = ["A", "B", "C", "D"];
+  $("opts").innerHTML = q.opts.map((o, i) =>
+    `<button class="opt" data-i="${i}"><span class="key">${letters[i]}</span>${o}</button>`).join("");
+  $("opts").querySelectorAll(".opt").forEach(btn =>
+    btn.addEventListener("click", () => answer(parseInt(btn.dataset.i))));
+}
+
+function answer(i) {
+  const q = state.qs[state.idx];
+  const correct = i === q.a;
+  const buttons = $("opts").querySelectorAll(".opt");
+  buttons.forEach((b, bi) => {
+    b.disabled = true;
+    if (bi === q.a) b.classList.add("correct");
+    else if (bi === i) b.classList.add("wrong");
+    else b.classList.add("faded");
+  });
+
+  if (correct) {
+    state.score++;
+    state.streak++;
+    state.best = Math.max(state.best, state.streak);
+  } else {
+    state.streak = 0;
+    state.wrongs.push(q);
+  }
+
+  const fb = $("feedback");
+  fb.innerHTML = `<div class="feedback ${correct ? "good" : "bad"}">
+    <strong>${correct ? "✅ Correto!" : "❌ Quase!"}${correct && state.streak >= 3 ? `<span class="streak">🔥 ${state.streak} seguidas!</span>` : ""}</strong>
+    ${q.ex}
+  </div>`;
+
+  const nextBtn = $("nextBtn");
+  nextBtn.textContent = state.idx + 1 >= state.qs.length ? "Ver resultado →" : "Próxima pergunta →";
+  nextBtn.classList.remove("hidden");
+  nextBtn.onclick = next;
+  nextBtn.focus();
+}
+
+function next() {
+  if (state.idx + 1 >= state.qs.length) return showResult();
+  state.idx++;
+  renderQuestion();
+}
+
+function showResult() {
+  game.classList.add("hidden");
+  result.classList.remove("hidden");
+  const total = state.qs.length;
+  const pct = Math.round((state.score / total) * 100);
+  $("finalScore").textContent = state.score;
+  $("finalTotal").textContent = " / " + total;
+
+  let medal, msg;
+  if (pct === 100) { medal = "🏆"; msg = "Perfeito! Você dominou o tema!"; }
+  else if (pct >= 70) { medal = "🥇"; msg = "Muito bem! Você está quase lá."; }
+  else if (pct >= 50) { medal = "💪"; msg = "Bom começo! Vale revisar um pouco."; }
+  else { medal = "🌱"; msg = "Continue praticando, você vai chegar lá!"; }
+  $("medal").textContent = medal;
+  $("finalMsg").textContent = msg;
+  $("finalSub").textContent = `${pct}% de acertos · melhor sequência: ${state.best}`;
+
+  const rev = $("review");
+  if (state.wrongs.length) {
+    rev.innerHTML = "<h2>Para revisar</h2>" + state.wrongs.map(q =>
+      `<div class="review-item">${q.q.replace("___", `<span class="ans">${q.opts[q.a]}</span>`)}<br><span style="color:var(--ink-soft)">${q.ex}</span></div>`).join("");
+  } else {
+    rev.innerHTML = "";
+  }
+
+  $("againBtn").onclick = () => start(state.topic);
+  $("menuBtn").onclick = () => {
+    result.classList.add("hidden");
+    game.classList.add("hidden");
+    $("subtitle").textContent = "Escolha um tema e responda às perguntas. Boa sorte!";
+    menu.classList.remove("hidden");
+  };
+}
+
+renderMenu();
+</script>
+</body>
+</html>
