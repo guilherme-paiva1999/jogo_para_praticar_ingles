@@ -69,6 +69,9 @@
   }
   .level:nth-child(2) .lbadge { background: var(--presimple-soft); }
   .level:nth-child(3) .lbadge { background: var(--precont-soft); }
+  .level:nth-child(4) .lbadge { background: var(--pastsimple-soft); }
+  .level:nth-child(5) .lbadge { background: var(--pastcont-soft); }
+  .level:nth-child(6) .lbadge { background: var(--mix-soft); }
   .level .lname { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 17px; display: block; }
   .level .ldesc { font-size: 12.5px; color: var(--ink-soft); display: block; margin-top: 2px; }
   .level .lprog { font-size: 12px; color: var(--ink-soft); display: block; margin-top: 4px; font-weight: 600; }
@@ -318,7 +321,7 @@
     </div>
   </section>
 
-  <footer>Níveis A1 · A2 · B1 — do verbo to be às condicionais</footer>
+  <footer>Níveis A1 a C2 — do verbo to be às participle clauses</footer>
 </div>
 
 <script src="questoes.js"></script>
@@ -390,14 +393,14 @@ function getPlacement() {
   try { return localStorage.getItem(placeKey()); } catch (e) { return null; }
 }
 
-let placement = { qs: [], idx: 0, correct: { A1: 0, A2: 0, B1: 0 } };
+let placement = { lvlIdx: 0, qs: [], qIdx: 0, correct: 0, detail: {} };
 
 function startPlacementIntro() {
   $("subtitle").textContent = "Teste de nivelamento";
   placementScreen.innerHTML = `
     <div class="qcard">
       <p class="qtext">Vamos descobrir seu nível? 🎯</p>
-      <p class="instruction">São 12 perguntas rápidas, do básico ao intermediário. Não se preocupe em errar — o teste serve só para liberar os níveis certos para você, e é feito uma única vez.</p>
+      <p class="instruction">São 3 perguntas por nível, do A1 ao C2 — você avança enquanto acertar. Não se preocupe em errar: o teste serve só para liberar os níveis certos para você, e é feito uma única vez.</p>
       <button class="btn" id="startPlacement">Começar o teste</button>
       <button class="btn ghost" id="skipPlacement">Pular e começar do A1</button>
     </div>`;
@@ -406,25 +409,34 @@ function startPlacementIntro() {
   show(placementScreen);
 }
 
+function pickPlacement(lvl) {
+  const ids = TOPICS.filter(t => t.level === lvl).map(t => t.id);
+  const all = ids.flatMap(k => (QUIZ[k] || []).map(q => ({ ...q, lvl })));
+  return shuffle(all).slice(0, 3);
+}
+
 function runPlacement() {
-  const pick = lvl => {
-    const ids = TOPICS.filter(t => t.level === lvl).map(t => t.id);
-    const all = ids.flatMap(k => (QUIZ[k] || []).map(q => ({ ...q, lvl })));
-    return shuffle(all).slice(0, 4);
-  };
-  placement = { qs: [...pick("A1"), ...pick("A2"), ...pick("B1")], idx: 0, correct: { A1: 0, A2: 0, B1: 0 } };
+  placement = { lvlIdx: 0, qs: [], qIdx: 0, correct: 0, detail: {} };
+  nextPlacementLevel();
+}
+
+function nextPlacementLevel() {
+  placement.qs = pickPlacement(NIVEIS[placement.lvlIdx].id);
+  placement.qIdx = 0;
+  placement.correct = 0;
   renderPlacementQ();
 }
 
 function renderPlacementQ() {
-  const q = placement.qs[placement.idx];
+  const q = placement.qs[placement.qIdx];
+  const lvl = NIVEIS[placement.lvlIdx].id;
   const letters = ["A", "B", "C", "D"];
   placementScreen.innerHTML = `
     <div class="hud">
-      <span class="tense-badge" style="background:var(--mix-soft)">Nivelamento</span>
-      <span class="score">Pergunta ${placement.idx + 1} de ${placement.qs.length}</span>
+      <span class="tense-badge" style="background:var(--mix-soft)">Nivelamento · ${lvl}</span>
+      <span class="score">Pergunta ${placement.qIdx + 1} de 3</span>
     </div>
-    <div class="bar"><div style="width:${Math.round(placement.idx / placement.qs.length * 100)}%;background:var(--ink);height:100%;border-radius:999px"></div></div>
+    <div class="bar"><div style="width:${Math.round(placement.lvlIdx / NIVEIS.length * 100)}%;background:var(--ink);height:100%;border-radius:999px"></div></div>
     <div class="qcard">
       <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
       <div class="opts">${q.opts.map((o, i) =>
@@ -434,7 +446,7 @@ function renderPlacementQ() {
     btn.addEventListener("click", () => {
       const i = parseInt(btn.dataset.i);
       const correct = i === q.a;
-      if (correct) placement.correct[q.lvl]++;
+      if (correct) placement.correct++;
       placementScreen.querySelectorAll(".opt").forEach((b, bi) => {
         b.disabled = true;
         if (bi === q.a) b.classList.add("correct");
@@ -442,12 +454,19 @@ function renderPlacementQ() {
         else b.classList.add("faded");
       });
       setTimeout(() => {
-        placement.idx++;
-        if (placement.idx >= placement.qs.length) {
-          const d = placement.correct;
-          const lvl = d.A1 >= 3 ? (d.A2 >= 3 ? "B1" : "A2") : "A1";
-          finishPlacement(lvl, false, { A1: d.A1, A2: d.A2, B1: d.B1 });
-        } else renderPlacementQ();
+        placement.qIdx++;
+        if (placement.qIdx < placement.qs.length) { renderPlacementQ(); return; }
+        const lvlId = NIVEIS[placement.lvlIdx].id;
+        placement.detail[lvlId] = placement.correct;
+        const passed = placement.correct >= 2;
+        if (passed && placement.lvlIdx < NIVEIS.length - 1) {
+          placement.lvlIdx++;
+          nextPlacementLevel();
+        } else if (passed) {
+          finishPlacement(NIVEIS[NIVEIS.length - 1].id, false, placement.detail);
+        } else {
+          finishPlacement(lvlId, false, placement.detail);
+        }
       }, 900);
     }));
 }
@@ -458,11 +477,14 @@ function finishPlacement(level, skipped, detail) {
   if (skipped) { renderLevels(); return; }
   $("subtitle").textContent = "Resultado do nivelamento";
   const n = levelOf(level);
+  const detailTxt = detail
+    ? "Acertos — " + Object.entries(detail).map(([k, v]) => `${k}: ${v}/3`).join(" · ")
+    : "";
   placementScreen.innerHTML = `
     <div class="qcard result">
       <div class="medal">🎯</div>
       <p class="msg" style="font-size:22px">Seu nível: ${n.name}</p>
-      <p class="sub">Acertos — A1: ${detail.A1}/4 · A2: ${detail.A2}/4 · B1: ${detail.B1}/4</p>
+      <p class="sub">${detailTxt}</p>
       <p class="sub">${level === "A1"
         ? "Você vai começar pelo início — perfeito para construir uma base forte!"
         : "Os níveis até o " + level + " já estão liberados para você. Bom jogo!"}</p>
