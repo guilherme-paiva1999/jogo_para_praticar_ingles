@@ -232,7 +232,7 @@ async function loadStudents() {
       btn.innerHTML = `
         <span>
           <span class="sname">${esc(d.name || doc.id)}</span>
-          <span class="smeta" style="display:block">${d.gamesCount || 0} partida(s) · último jogo: ${fmtDate(d.lastPlayed)}</span>
+          <span class="smeta" style="display:block">${d.gamesCount || 0} partida(s) · último jogo: ${fmtDate(d.lastPlayed)}${d.placementLevel ? " · nivelamento: " + esc(d.placementLevel) + (d.placementSkipped ? " (pulou)" : "") : ""}</span>
         </span>
         <span class="pill ${pctClass(pct)}">${pct}%</span>`;
       btn.addEventListener("click", () => openStudent(doc.id, d));
@@ -311,7 +311,7 @@ async function openStudent(id, d) {
       item.innerHTML = `
         <button class="game-head">
           <span>
-            <span class="gtitle">${esc(g.topicName || g.topic)} · ${esc(g.modeName || g.mode)}</span>
+            <span class="gtitle">${g.level ? esc(g.level) + " · " : ""}${esc(g.topicName || g.topic)} · ${esc(g.modeName || g.mode)}</span>
             <span class="gdate" style="display:block">${fmtDate(g.date)} · sequência máx: ${g.bestStreak || 0}</span>
           </span>
           <span class="pill ${pctClass(g.pct)}">${g.score}/${g.total}</span>
