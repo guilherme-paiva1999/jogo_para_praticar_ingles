@@ -50,6 +50,29 @@
   header h1 em { font-style: normal; color: var(--tobe); }
   header p { color: var(--ink-soft); font-size: 15px; margin-top: 8px; }
 
+  .levels { display: grid; gap: 12px; }
+  .level {
+    border: 2.5px solid var(--ink); border-radius: 16px; background: var(--card);
+    padding: 18px 16px; text-align: left; cursor: pointer; font-family: inherit;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .12s ease, box-shadow .12s ease;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .level:hover:not(:disabled), .level:focus-visible:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .level:active:not(:disabled) { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+  .level:disabled { cursor: not-allowed; opacity: .65; background: var(--paper); }
+  .level .lbadge {
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px;
+    width: 52px; height: 52px; border-radius: 12px; border: 2.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: var(--tobe-soft);
+  }
+  .level:nth-child(2) .lbadge { background: var(--presimple-soft); }
+  .level:nth-child(3) .lbadge { background: var(--precont-soft); }
+  .level .lname { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 17px; display: block; }
+  .level .ldesc { font-size: 12.5px; color: var(--ink-soft); display: block; margin-top: 2px; }
+  .level .lprog { font-size: 12px; color: var(--ink-soft); display: block; margin-top: 4px; font-weight: 600; }
+
   .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .topic {
     border: 2.5px solid var(--ink); border-radius: 16px; background: var(--card);
@@ -57,12 +80,18 @@
     box-shadow: 4px 4px 0 var(--ink);
     transition: transform .12s ease, box-shadow .12s ease;
     display: flex; flex-direction: column; gap: 10px; min-height: 104px;
+    position: relative;
   }
   .topic:hover, .topic:focus-visible { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
   .topic:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
   .topic .dot { width: 26px; height: 26px; border-radius: 8px; border: 2.5px solid var(--ink); flex-shrink: 0; }
-  .topic .tname { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 16px; line-height: 1.2; display: block; }
+  .topic .tname { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 15px; line-height: 1.2; display: block; }
   .topic .tsub { font-size: 12px; color: var(--ink-soft); }
+  .topic .tbest {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+    border: 2px solid var(--ink); background: var(--ok-soft);
+  }
   .topic.mix { grid-column: 1 / -1; flex-direction: row; align-items: center; }
   .topic.mix .dot { background: repeating-linear-gradient(45deg, var(--tobe) 0 6px, var(--presimple) 6px 12px, var(--precont) 12px 18px, var(--pastcont) 18px 24px); }
 
@@ -106,7 +135,7 @@
   @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
   @media (prefers-reduced-motion: reduce) {
     .qcard { animation: none; }
-    .topic, .mode, .opt, .btn, .chip { transition: none; }
+    .topic, .mode, .level, .opt, .btn, .chip { transition: none; }
     .pop, .shake { animation: none !important; }
     .confetti { display: none; }
   }
@@ -201,7 +230,12 @@
   .result .bignum { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 64px; line-height: 1; }
   .result .bignum small { font-size: 24px; color: var(--ink-soft); font-weight: 700; }
   .result .msg { margin: 10px 0 4px; font-size: 17px; font-weight: 600; }
-  .result .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 20px; }
+  .result .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 8px; }
+  .result .unlock {
+    margin: 0 auto 16px; display: inline-block;
+    font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px;
+    border: 2px solid var(--ok); background: var(--ok-soft); color: var(--ink);
+  }
   .medal {
     width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--ink);
     margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
@@ -216,9 +250,7 @@
   .review-item .ans { font-weight: 700; color: var(--ok); }
 
   .confetti { position: fixed; top: -20px; font-size: 22px; pointer-events: none; z-index: 99; animation: fall linear forwards; }
-  @keyframes fall {
-    to { transform: translateY(110vh) rotate(720deg); opacity: .3; }
-  }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .3; } }
 
   footer { margin-top: 36px; text-align: center; font-size: 12px; color: var(--ink-soft); }
 </style>
@@ -228,8 +260,8 @@
 
   <header>
     <span class="logo">Grammar Quest</span>
-    <h1>Domine os tempos verbais em <em>inglês</em></h1>
-    <p id="subtitle">Escolha um tema para começar. Boa sorte!</p>
+    <h1>Domine a gramática do <em>inglês</em></h1>
+    <p id="subtitle">Identifique-se para começar</p>
   </header>
 
   <section id="nameScreen" class="hidden">
@@ -249,7 +281,14 @@
     <button id="changeName" class="backlink" style="margin:0 0 0 8px; font-size:13px;">trocar</button>
   </p>
 
-  <section id="menu" class="topics" aria-label="Escolha um tema"></section>
+  <section id="placementScreen" class="hidden"></section>
+
+  <section id="levelScreen" class="levels hidden" aria-label="Escolha um nível"></section>
+
+  <section id="menu" class="hidden">
+    <button class="backlink" id="backToLevels">← Voltar aos níveis</button>
+    <div class="topics" id="topicList"></div>
+  </section>
 
   <section id="modeScreen" class="hidden">
     <button class="backlink" id="backToTopics">← Voltar aos temas</button>
@@ -271,6 +310,7 @@
       <div class="bignum"><span id="finalScore"></span><small id="finalTotal"></small></div>
       <p class="msg" id="finalMsg"></p>
       <p class="sub" id="finalSub"></p>
+      <div id="unlockMsg"></div>
       <button class="btn" id="againBtn">Jogar de novo</button>
       <button class="btn ghost" id="modeBtn">Trocar de modo</button>
       <button class="btn ghost" id="menuBtn">Escolher outro tema</button>
@@ -278,189 +318,23 @@
     </div>
   </section>
 
-  <footer>verb to be · present simple · past simple · present continuous · past continuous</footer>
+  <footer>Níveis A1 · A2 · B1 — do verbo to be às condicionais</footer>
 </div>
 
+<script src="questoes.js"></script>
 <script>
-const TOPICS = [
-  { id: "tobe", name: "Verbo to be", sub: "am · is · are · was · were", color: "var(--tobe)", soft: "var(--tobe-soft)" },
-  { id: "presimple", name: "Present simple", sub: "rotinas e fatos", color: "var(--presimple)", soft: "var(--presimple-soft)" },
-  { id: "pastsimple", name: "Past simple", sub: "ações concluídas", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
-  { id: "precont", name: "Present continuous", sub: "acontecendo agora", color: "var(--precont)", soft: "var(--precont-soft)" },
-  { id: "pastcont", name: "Past continuous", sub: "em progresso no passado", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
-  { id: "mix", name: "Modo misto", sub: "perguntas de todos os temas", color: "var(--mix)", soft: "var(--mix-soft)" }
-];
-
 const MODES = [
   { id: "quiz", icon: "🎯", name: "Quiz", sub: "Escolha a alternativa correta" },
   { id: "build", icon: "🧩", name: "Monte a frase", sub: "Toque nas palavras na ordem certa" },
-  { id: "type", icon: "⌨️", name: "Digite o verbo", sub: "Escreva a forma correta, sem dicas" }
+  { id: "type", icon: "⌨️", name: "Digite a resposta", sub: "Escreva a forma correta, sem alternativas" }
 ];
 
-const QUIZ = {
-  tobe: [
-    { q: "She ___ a doctor.", opts: ["is","are","am","be"], a: 0, ex: "'She' usa 'is': She is a doctor." },
-    { q: "They ___ my friends.", opts: ["is","are","am","was"], a: 1, ex: "'They' (plural) usa 'are'." },
-    { q: "I ___ very happy today.", opts: ["is","are","am","be"], a: 2, ex: "'I' sempre usa 'am'." },
-    { q: "___ you a student?", opts: ["Is","Are","Am","Be"], a: 1, ex: "Pergunta com 'you' usa 'Are'." },
-    { q: "We ___ at home yesterday.", opts: ["was","are","were","is"], a: 2, ex: "'We' no passado usa 'were'." },
-    { q: "He ___ tired last night.", opts: ["were","is","are","was"], a: 3, ex: "'He' no passado usa 'was'." },
-    { q: "The books ___ on the table.", opts: ["is","are","am","was"], a: 1, ex: "'The books' (plural) usa 'are'." },
-    { q: "It ___ not cold today.", opts: ["are","am","is","were"], a: 2, ex: "'It' usa 'is': It is not (isn't) cold." },
-    { q: "My parents ___ at the party last week.", opts: ["was","is","were","are"], a: 2, ex: "'My parents' (plural) no passado usa 'were'." },
-    { q: "___ she your teacher?", opts: ["Are","Is","Am","Were"], a: 1, ex: "Pergunta com 'she' no presente usa 'Is'." }
-  ],
-  presimple: [
-    { q: "She ___ to school every day.", opts: ["go","goes","going","went"], a: 1, ex: "3ª pessoa do singular (she/he/it) recebe -es: goes." },
-    { q: "They ___ soccer on Sundays.", opts: ["plays","play","playing","played"], a: 1, ex: "'They' usa a forma base: play." },
-    { q: "He ___ like coffee.", opts: ["don't","doesn't","isn't","not"], a: 1, ex: "Negativa com 'he' usa 'doesn't' + verbo base." },
-    { q: "___ you speak English?", opts: ["Does","Are","Do","Is"], a: 2, ex: "Pergunta com 'you' usa 'Do'." },
-    { q: "My mother ___ dinner at 7 PM.", opts: ["cook","cooks","cooking","is cook"], a: 1, ex: "'My mother' = she, então 'cooks'." },
-    { q: "Water ___ at 100°C.", opts: ["boil","boils","boiling","is boil"], a: 1, ex: "Fatos científicos usam present simple: boils." },
-    { q: "___ she work in a hospital?", opts: ["Do","Is","Are","Does"], a: 3, ex: "Pergunta com 'she' usa 'Does' + verbo base." },
-    { q: "I ___ TV in the morning.", opts: ["don't watch","doesn't watch","not watch","am not watch"], a: 0, ex: "Negativa com 'I' usa 'don't' + verbo base." },
-    { q: "The bank ___ at 9 AM.", opts: ["open","opens","opening","is open"], a: 1, ex: "'The bank' = it, então 'opens'." },
-    { q: "We ___ our grandparents every weekend.", opts: ["visits","visiting","visit","are visit"], a: 2, ex: "'We' usa a forma base: visit." }
-  ],
-  pastsimple: [
-    { q: "She ___ to the park yesterday.", opts: ["go","goes","went","gone"], a: 2, ex: "'Go' é irregular: o passado é 'went'." },
-    { q: "They ___ a movie last night.", opts: ["watch","watched","watching","watches"], a: 1, ex: "Verbo regular: watch + ed = watched." },
-    { q: "He ___ his keys this morning.", opts: ["lose","losed","lost","loses"], a: 2, ex: "'Lose' é irregular: lost." },
-    { q: "___ you visit your grandmother?", opts: ["Do","Does","Did","Was"], a: 2, ex: "Perguntas no passado usam 'Did' + verbo base." },
-    { q: "I ___ breakfast at 8 AM.", opts: ["eat","ate","eaten","eats"], a: 1, ex: "'Eat' é irregular: ate." },
-    { q: "We ___ go to the beach last summer.", opts: ["don't","doesn't","didn't","wasn't"], a: 2, ex: "Negativa no passado: didn't + verbo base." },
-    { q: "She ___ a beautiful song.", opts: ["sing","sang","sung","sings"], a: 1, ex: "'Sing' é irregular: sang." },
-    { q: "They ___ in London in 2010.", opts: ["live","lives","lived","living"], a: 2, ex: "Verbo regular: live + d = lived." },
-    { q: "He ___ a new car last month.", opts: ["buy","buyed","bought","buys"], a: 2, ex: "'Buy' é irregular: bought." },
-    { q: "What ___ you do yesterday?", opts: ["do","did","does","was"], a: 1, ex: "Perguntas no passado: What did you do?" }
-  ],
-  precont: [
-    { q: "She ___ a book right now.", opts: ["reads","is reading","read","reading"], a: 1, ex: "Ação acontecendo agora: is + verbo-ing." },
-    { q: "They ___ soccer at the moment.", opts: ["is playing","plays","are playing","play"], a: 2, ex: "'They' usa 'are' + playing." },
-    { q: "I ___ for the bus.", opts: ["am waiting","is waiting","waiting","waits"], a: 0, ex: "'I' usa 'am' + waiting." },
-    { q: "___ you listening to me?", opts: ["Do","Is","Are","Does"], a: 2, ex: "Pergunta no present continuous: Are you + verbo-ing?" },
-    { q: "He ___ TV now.", opts: ["isn't watching","don't watch","not watching","doesn't watching"], a: 0, ex: "Negativa: is not (isn't) + watching." },
-    { q: "Look! It ___.", opts: ["rains","is raining","rained","raining"], a: 1, ex: "'Look!' indica ação em progresso: is raining." },
-    { q: "We ___ dinner at the moment.", opts: ["cook","cooks","are cooking","is cooking"], a: 2, ex: "'We' usa 'are' + cooking." },
-    { q: "The baby ___ right now.", opts: ["sleep","sleeps","is sleeping","are sleeping"], a: 2, ex: "'The baby' = it, então 'is sleeping'." },
-    { q: "Listen! Someone ___ the piano.", opts: ["plays","is playing","play","played"], a: 1, ex: "'Listen!' indica ação agora: is playing." },
-    { q: "Why ___ you crying?", opts: ["do","is","are","does"], a: 2, ex: "'You' usa 'are': Why are you crying?" }
-  ],
-  pastcont: [
-    { q: "She ___ when I called her.", opts: ["studies","was studying","is studying","studied"], a: 1, ex: "Ação em progresso no passado: was + studying." },
-    { q: "They ___ TV at 8 PM yesterday.", opts: ["was watching","watched","were watching","are watching"], a: 2, ex: "'They' usa 'were' + watching." },
-    { q: "I ___ when the phone rang.", opts: ["was sleeping","slept","am sleeping","were sleeping"], a: 0, ex: "'I' no passado contínuo usa 'was' + sleeping." },
-    { q: "___ you working at 10 PM?", opts: ["Did","Was","Are","Were"], a: 3, ex: "Pergunta com 'you': Were you + verbo-ing?" },
-    { q: "He ___ attention in class.", opts: ["wasn't paying","didn't paying","isn't paying","weren't paying"], a: 0, ex: "Negativa com 'he': wasn't + paying." },
-    { q: "While we ___, it started to rain.", opts: ["walk","are walking","were walking","walks"], a: 2, ex: "'While' + ação longa no passado: were walking." },
-    { q: "What ___ you doing at midnight?", opts: ["was","did","were","are"], a: 2, ex: "'You' usa 'were': What were you doing?" },
-    { q: "The children ___ in the garden all afternoon.", opts: ["was playing","were playing","played playing","are playing"], a: 1, ex: "'The children' (plural) usa 'were' + playing." },
-    { q: "It ___ when we left the house.", opts: ["was snowing","snows","is snowing","were snowing"], a: 0, ex: "'It' usa 'was' + snowing." },
-    { q: "While she ___, he was washing the dishes.", opts: ["cooks","was cooking","is cooking","cooked"], a: 1, ex: "Duas ações simultâneas no passado: was cooking / was washing." }
-  ]
-};
-
-const BUILD = {
-  tobe: [
-    { s: "She is a doctor", ex: "Sujeito + is/am/are + complemento." },
-    { s: "They were at home yesterday", ex: "'They' no passado usa 'were'." },
-    { s: "Are you a student ?", ex: "Na pergunta, o verbo to be vem antes do sujeito." },
-    { s: "I am not tired today", ex: "Negativa: sujeito + am/is/are + not." },
-    { s: "The books are on the table", ex: "Sujeito plural usa 'are'." },
-    { s: "He was late for class", ex: "'He' no passado usa 'was'." }
-  ],
-  presimple: [
-    { s: "She goes to school every day", ex: "3ª pessoa do singular: goes." },
-    { s: "He does not like coffee", ex: "Negativa com he: does not (doesn't) + verbo base." },
-    { s: "Do you speak English ?", ex: "Pergunta: Do/Does + sujeito + verbo base." },
-    { s: "My father works in a bank", ex: "'My father' = he, então 'works'." },
-    { s: "We play soccer on Sundays", ex: "'We' usa a forma base do verbo." },
-    { s: "The bank opens at nine", ex: "Horários fixos usam present simple." }
-  ],
-  pastsimple: [
-    { s: "She went to the park yesterday", ex: "'Go' é irregular: went." },
-    { s: "They watched a movie last night", ex: "Verbo regular: watched." },
-    { s: "Did you visit your grandmother ?", ex: "Pergunta no passado: Did + sujeito + verbo base." },
-    { s: "I did not eat breakfast today", ex: "Negativa: did not (didn't) + verbo base." },
-    { s: "He bought a new car last month", ex: "'Buy' é irregular: bought." },
-    { s: "We lived in London in 2010", ex: "Verbo regular: lived." }
-  ],
-  precont: [
-    { s: "She is reading a book now", ex: "Presente contínuo: is + verbo-ing." },
-    { s: "They are playing soccer now", ex: "'They' usa 'are' + playing." },
-    { s: "Are you listening to me ?", ex: "Pergunta: Are + sujeito + verbo-ing?" },
-    { s: "He is not watching TV now", ex: "Negativa: is not (isn't) + verbo-ing." },
-    { s: "I am waiting for the bus", ex: "'I' usa 'am' + waiting." },
-    { s: "The baby is sleeping right now", ex: "'The baby' = it: is sleeping." }
-  ],
-  pastcont: [
-    { s: "She was studying when I called", ex: "Ação em progresso no passado: was studying." },
-    { s: "They were watching TV last night", ex: "'They' usa 'were' + watching." },
-    { s: "Were you working at ten ?", ex: "Pergunta: Were + sujeito + verbo-ing?" },
-    { s: "He was not paying attention in class", ex: "Negativa: was not (wasn't) + verbo-ing." },
-    { s: "I was sleeping when the phone rang", ex: "Duas ações: uma longa (was sleeping), uma curta (rang)." },
-    { s: "The children were playing in the garden", ex: "Sujeito plural: were playing." }
-  ]
-};
-
-const TYPE = {
-  tobe: [
-    { q: "She ___ a doctor.", hint: "to be · presente", ans: ["is"], ex: "'She' usa 'is'." },
-    { q: "They ___ my friends.", hint: "to be · presente", ans: ["are"], ex: "'They' usa 'are'." },
-    { q: "I ___ very happy today.", hint: "to be · presente", ans: ["am"], ex: "'I' sempre usa 'am'." },
-    { q: "We ___ at home yesterday.", hint: "to be · passado", ans: ["were"], ex: "'We' no passado usa 'were'." },
-    { q: "He ___ tired last night.", hint: "to be · passado", ans: ["was"], ex: "'He' no passado usa 'was'." },
-    { q: "The books ___ on the table.", hint: "to be · presente", ans: ["are"], ex: "Sujeito plural usa 'are'." },
-    { q: "It ___ cold today.", hint: "to be · presente", ans: ["is"], ex: "'It' usa 'is'." },
-    { q: "My parents ___ at the party last week.", hint: "to be · passado", ans: ["were"], ex: "Sujeito plural no passado usa 'were'." }
-  ],
-  presimple: [
-    { q: "She ___ to school every day.", hint: "verbo: go", ans: ["goes"], ex: "3ª pessoa singular: goes." },
-    { q: "He ___ TV at night.", hint: "verbo: watch", ans: ["watches"], ex: "Verbos em -ch recebem -es: watches." },
-    { q: "My mother ___ dinner at 7 PM.", hint: "verbo: cook", ans: ["cooks"], ex: "'My mother' = she: cooks." },
-    { q: "They ___ soccer on Sundays.", hint: "verbo: play", ans: ["play"], ex: "'They' usa a forma base: play." },
-    { q: "The bank ___ at 9 AM.", hint: "verbo: open", ans: ["opens"], ex: "'The bank' = it: opens." },
-    { q: "She ___ a dog and two cats.", hint: "verbo: have", ans: ["has"], ex: "'Have' é irregular na 3ª pessoa: has." },
-    { q: "He ___ his homework after school.", hint: "verbo: do", ans: ["does"], ex: "'Do' na 3ª pessoa: does." },
-    { q: "I ___ English every morning.", hint: "verbo: study", ans: ["study"], ex: "'I' usa a forma base: study." }
-  ],
-  pastsimple: [
-    { q: "She ___ to the park yesterday.", hint: "verbo: go", ans: ["went"], ex: "'Go' é irregular: went." },
-    { q: "They ___ a movie last night.", hint: "verbo: watch", ans: ["watched"], ex: "Regular: watched." },
-    { q: "He ___ a new car last month.", hint: "verbo: buy", ans: ["bought"], ex: "'Buy' é irregular: bought." },
-    { q: "I ___ breakfast at 8 AM.", hint: "verbo: eat", ans: ["ate"], ex: "'Eat' é irregular: ate." },
-    { q: "We ___ in London in 2010.", hint: "verbo: live", ans: ["lived"], ex: "Regular: lived." },
-    { q: "She ___ a beautiful song.", hint: "verbo: sing", ans: ["sang"], ex: "'Sing' é irregular: sang." },
-    { q: "He ___ his keys this morning.", hint: "verbo: lose", ans: ["lost"], ex: "'Lose' é irregular: lost." },
-    { q: "They ___ all night for the test.", hint: "verbo: study", ans: ["studied"], ex: "Y vira i + ed: studied." }
-  ],
-  precont: [
-    { q: "She ___ a book right now.", hint: "verbo: read (2 palavras)", ans: ["is reading"], ex: "is + reading." },
-    { q: "They ___ soccer at the moment.", hint: "verbo: play (2 palavras)", ans: ["are playing"], ex: "are + playing." },
-    { q: "I ___ for the bus.", hint: "verbo: wait (2 palavras)", ans: ["am waiting"], ex: "am + waiting." },
-    { q: "The baby ___ right now.", hint: "verbo: sleep (2 palavras)", ans: ["is sleeping"], ex: "is + sleeping." },
-    { q: "We ___ dinner now.", hint: "verbo: cook (2 palavras)", ans: ["are cooking"], ex: "are + cooking." },
-    { q: "Look! It ___.", hint: "verbo: rain (2 palavras)", ans: ["is raining"], ex: "is + raining." },
-    { q: "He ___ in the park now.", hint: "verbo: run (2 palavras)", ans: ["is running"], ex: "Dobra o n: running." },
-    { q: "You ___ too much noise!", hint: "verbo: make (2 palavras)", ans: ["are making"], ex: "Tira o e: making." }
-  ],
-  pastcont: [
-    { q: "She ___ when I called.", hint: "verbo: study (2 palavras)", ans: ["was studying"], ex: "was + studying." },
-    { q: "They ___ TV at 8 PM.", hint: "verbo: watch (2 palavras)", ans: ["were watching"], ex: "were + watching." },
-    { q: "I ___ when the phone rang.", hint: "verbo: sleep (2 palavras)", ans: ["was sleeping"], ex: "was + sleeping." },
-    { q: "We ___ when it started to rain.", hint: "verbo: walk (2 palavras)", ans: ["were walking"], ex: "were + walking." },
-    { q: "He ___ home at midnight.", hint: "verbo: drive (2 palavras)", ans: ["was driving"], ex: "Tira o e: driving." },
-    { q: "The children ___ in the garden.", hint: "verbo: play (2 palavras)", ans: ["were playing"], ex: "were + playing." },
-    { q: "It ___ when we left the house.", hint: "verbo: snow (2 palavras)", ans: ["was snowing"], ex: "was + snowing." },
-    { q: "You ___ during the class.", hint: "verbo: talk (2 palavras)", ans: ["were talking"], ex: "were + talking." }
-  ]
-};
-
-let state = { topic: null, mode: null, qs: [], idx: 0, score: 0, streak: 0, best: 0, wrongs: [], answers: [], built: [] };
+let state = { level: null, topic: null, mode: null, qs: [], idx: 0, score: 0, streak: 0, best: 0, wrongs: [], answers: [], built: [] };
 let player = null;
 
 const $ = id => document.getElementById(id);
-const menu = $("menu"), modeScreen = $("modeScreen"), game = $("game"), result = $("result"), nameScreen = $("nameScreen");
+const nameScreen = $("nameScreen"), placementScreen = $("placementScreen"), levelScreen = $("levelScreen"),
+      menu = $("menu"), modeScreen = $("modeScreen"), game = $("game"), result = $("result");
 
 function shuffle(arr) {
   const a = [...arr];
@@ -470,24 +344,204 @@ function shuffle(arr) {
   }
   return a;
 }
-function topicOf(id) { return TOPICS.find(t => t.id === id); }
-function show(el) { [nameScreen, menu, modeScreen, game, result].forEach(s => s.classList.add("hidden")); el.classList.remove("hidden"); $("playerBar").classList.toggle("hidden", el === nameScreen || !player); }
-function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function topicOf(id) {
+  if (id === "mix") return { id: "mix", name: "Modo misto", color: "var(--mix)", soft: "var(--mix-soft)" };
+  return TOPICS.find(t => t.id === id);
+}
+function levelOf(id) { return NIVEIS.find(n => n.id === id); }
+function show(el) {
+  [nameScreen, placementScreen, levelScreen, menu, modeScreen, game, result].forEach(s => s.classList.add("hidden"));
+  el.classList.remove("hidden");
+  $("playerBar").classList.toggle("hidden", el === nameScreen || !player);
+}
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function slugName(name) {
+  return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50);
+}
 
-function renderMenu() {
-  menu.innerHTML = TOPICS.map(t => `
-    <button class="topic ${t.id === "mix" ? "mix" : ""}" data-id="${t.id}">
-      <span class="dot" style="${t.id !== "mix" ? "background:" + t.soft + ";border-color:" + t.color : ""}"></span>
-      <span><span class="tname">${t.name}</span>
-      <span class="tsub">${t.sub}</span></span>
-    </button>`).join("");
-  menu.querySelectorAll(".topic").forEach(btn =>
+// ---------- Progresso local (desbloqueio) ----------
+function getProg() {
+  try { return JSON.parse(localStorage.getItem("gq_prog_" + slugName(player)) || "{}"); }
+  catch (e) { return {}; }
+}
+function setProg(p) {
+  try { localStorage.setItem("gq_prog_" + slugName(player), JSON.stringify(p)); } catch (e) {}
+}
+function topicsDone(levelId) {
+  const prog = getProg();
+  return TOPICS.filter(t => t.level === levelId && (prog[t.id] || 0) >= CONFIG.pctMinimo).length;
+}
+function levelUnlocked(levelId) {
+  if (!CONFIG.desbloqueio) return true;
+  const idx = NIVEIS.findIndex(n => n.id === levelId);
+  if (idx <= 0) return true;
+  const place = getPlacement();
+  if (place) {
+    const pIdx = NIVEIS.findIndex(n => n.id === place);
+    if (idx <= pIdx) return true;
+  }
+  return topicsDone(NIVEIS[idx - 1].id) >= CONFIG.temasMinimos;
+}
+
+// ---------- Teste de nivelamento ----------
+function placeKey() { return "gq_place_" + slugName(player); }
+function getPlacement() {
+  try { return localStorage.getItem(placeKey()); } catch (e) { return null; }
+}
+
+let placement = { qs: [], idx: 0, correct: { A1: 0, A2: 0, B1: 0 } };
+
+function startPlacementIntro() {
+  $("subtitle").textContent = "Teste de nivelamento";
+  placementScreen.innerHTML = `
+    <div class="qcard">
+      <p class="qtext">Vamos descobrir seu nível? 🎯</p>
+      <p class="instruction">São 12 perguntas rápidas, do básico ao intermediário. Não se preocupe em errar — o teste serve só para liberar os níveis certos para você, e é feito uma única vez.</p>
+      <button class="btn" id="startPlacement">Começar o teste</button>
+      <button class="btn ghost" id="skipPlacement">Pular e começar do A1</button>
+    </div>`;
+  $("startPlacement").addEventListener("click", runPlacement);
+  $("skipPlacement").addEventListener("click", () => finishPlacement("A1", true, null));
+  show(placementScreen);
+}
+
+function runPlacement() {
+  const pick = lvl => {
+    const ids = TOPICS.filter(t => t.level === lvl).map(t => t.id);
+    const all = ids.flatMap(k => (QUIZ[k] || []).map(q => ({ ...q, lvl })));
+    return shuffle(all).slice(0, 4);
+  };
+  placement = { qs: [...pick("A1"), ...pick("A2"), ...pick("B1")], idx: 0, correct: { A1: 0, A2: 0, B1: 0 } };
+  renderPlacementQ();
+}
+
+function renderPlacementQ() {
+  const q = placement.qs[placement.idx];
+  const letters = ["A", "B", "C", "D"];
+  placementScreen.innerHTML = `
+    <div class="hud">
+      <span class="tense-badge" style="background:var(--mix-soft)">Nivelamento</span>
+      <span class="score">Pergunta ${placement.idx + 1} de ${placement.qs.length}</span>
+    </div>
+    <div class="bar"><div style="width:${Math.round(placement.idx / placement.qs.length * 100)}%;background:var(--ink);height:100%;border-radius:999px"></div></div>
+    <div class="qcard">
+      <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
+      <div class="opts">${q.opts.map((o, i) =>
+        `<button class="opt" data-i="${i}"><span class="key">${letters[i]}</span>${esc(o)}</button>`).join("")}</div>
+    </div>`;
+  placementScreen.querySelectorAll(".opt").forEach(btn =>
+    btn.addEventListener("click", () => {
+      const i = parseInt(btn.dataset.i);
+      const correct = i === q.a;
+      if (correct) placement.correct[q.lvl]++;
+      placementScreen.querySelectorAll(".opt").forEach((b, bi) => {
+        b.disabled = true;
+        if (bi === q.a) b.classList.add("correct");
+        else if (bi === i) b.classList.add("wrong");
+        else b.classList.add("faded");
+      });
+      setTimeout(() => {
+        placement.idx++;
+        if (placement.idx >= placement.qs.length) {
+          const d = placement.correct;
+          const lvl = d.A1 >= 3 ? (d.A2 >= 3 ? "B1" : "A2") : "A1";
+          finishPlacement(lvl, false, { A1: d.A1, A2: d.A2, B1: d.B1 });
+        } else renderPlacementQ();
+      }, 900);
+    }));
+}
+
+function finishPlacement(level, skipped, detail) {
+  try { localStorage.setItem(placeKey(), level); } catch (e) {}
+  savePlacementToCloud(level, skipped, detail);
+  if (skipped) { renderLevels(); return; }
+  $("subtitle").textContent = "Resultado do nivelamento";
+  const n = levelOf(level);
+  placementScreen.innerHTML = `
+    <div class="qcard result">
+      <div class="medal">🎯</div>
+      <p class="msg" style="font-size:22px">Seu nível: ${n.name}</p>
+      <p class="sub">Acertos — A1: ${detail.A1}/4 · A2: ${detail.A2}/4 · B1: ${detail.B1}/4</p>
+      <p class="sub">${level === "A1"
+        ? "Você vai começar pelo início — perfeito para construir uma base forte!"
+        : "Os níveis até o " + level + " já estão liberados para você. Bom jogo!"}</p>
+      <button class="btn" id="goLevels">Começar a jogar</button>
+    </div>`;
+  if (level !== "A1") confettiBurst();
+  $("goLevels").addEventListener("click", renderLevels);
+  show(placementScreen);
+}
+
+async function savePlacementToCloud(level, skipped, detail) {
+  if (!db || !player) return;
+  try {
+    await db.collection("students").doc(slugName(player)).set({
+      name: player,
+      placementLevel: level,
+      placementSkipped: !!skipped,
+      placementDetail: detail || null,
+      placementDate: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (e) { console.warn("Não foi possível salvar o nivelamento:", e); }
+}
+
+// ---------- Telas ----------
+function renderLevels() {
+  $("subtitle").textContent = "Escolha o seu nível";
+  levelScreen.innerHTML = NIVEIS.map(n => {
+    const unlocked = levelUnlocked(n.id);
+    const total = TOPICS.filter(t => t.level === n.id).length;
+    const done = topicsDone(n.id);
+    const prev = NIVEIS[NIVEIS.findIndex(x => x.id === n.id) - 1];
+    const progTxt = unlocked
+      ? `✅ ${done} de ${total} temas dominados (≥${CONFIG.pctMinimo}%)`
+      : `🔒 Domine ${CONFIG.temasMinimos} temas do ${prev.id} para liberar (${topicsDone(prev.id)}/${CONFIG.temasMinimos})`;
+    return `
+      <button class="level" data-id="${n.id}" ${unlocked ? "" : "disabled"}>
+        <span class="lbadge">${unlocked ? n.id : "🔒"}</span>
+        <span>
+          <span class="lname">${n.name}</span>
+          <span class="ldesc">${n.desc}</span>
+          <span class="lprog">${progTxt}</span>
+        </span>
+      </button>`;
+  }).join("");
+  levelScreen.querySelectorAll(".level:not([disabled])").forEach(btn =>
+    btn.addEventListener("click", () => openLevel(btn.dataset.id)));
+  show(levelScreen);
+}
+
+function openLevel(levelId) {
+  state.level = levelId;
+  const n = levelOf(levelId);
+  $("subtitle").textContent = n.name + " — escolha um tema";
+  const prog = getProg();
+  const topics = TOPICS.filter(t => t.level === levelId);
+  $("topicList").innerHTML = topics.map(t => {
+    const best = prog[t.id];
+    return `
+      <button class="topic" data-id="${t.id}">
+        ${best !== undefined ? `<span class="tbest" style="${best >= CONFIG.pctMinimo ? "" : "background:var(--presimple-soft)"}">${best}%</span>` : ""}
+        <span class="dot" style="background:${t.soft};border-color:${t.color}"></span>
+        <span><span class="tname">${t.name}</span>
+        <span class="tsub">${t.sub}</span></span>
+      </button>`;
+  }).join("") + `
+    <button class="topic mix" data-id="mix">
+      <span class="dot"></span>
+      <span><span class="tname">Modo misto</span>
+      <span class="tsub">Perguntas de todos os temas do ${levelId}</span></span>
+    </button>`;
+  $("topicList").querySelectorAll(".topic").forEach(btn =>
     btn.addEventListener("click", () => openModes(btn.dataset.id)));
+  show(menu);
 }
 
 function openModes(topicId) {
   state.topic = topicId;
-  $("subtitle").textContent = topicId === "mix" ? "Modo misto — como você quer jogar?" : topicOf(topicId).name + " — como você quer jogar?";
+  const tName = topicId === "mix" ? "Modo misto (" + state.level + ")" : topicOf(topicId).name;
+  $("subtitle").textContent = tName + " — como você quer jogar?";
   $("modeList").innerHTML = MODES.map(m => `
     <button class="mode" data-id="${m.id}">
       <span class="micon">${m.icon}</span>
@@ -499,23 +553,22 @@ function openModes(topicId) {
   show(modeScreen);
 }
 
-$("backToTopics").addEventListener("click", () => {
-  $("subtitle").textContent = "Escolha um tema para começar. Boa sorte!";
-  show(menu);
-});
+$("backToLevels").addEventListener("click", renderLevels);
+$("backToTopics").addEventListener("click", () => openLevel(state.level));
 
+// ---------- Jogo ----------
 function start(topicId, mode) {
   const SRC = mode === "quiz" ? QUIZ : mode === "build" ? BUILD : TYPE;
   let pool;
   if (topicId === "mix") {
-    const per = mode === "build" ? 2 : 2;
-    pool = shuffle(Object.entries(SRC).flatMap(([k, qs]) =>
-      shuffle(qs.map(q => ({ ...q, cat: k }))).slice(0, per + 1)));
+    const ids = TOPICS.filter(t => t.level === state.level).map(t => t.id);
+    pool = shuffle(ids.flatMap(k =>
+      shuffle((SRC[k] || []).map(q => ({ ...q, cat: k }))).slice(0, 2)));
     pool = pool.slice(0, mode === "build" ? 8 : 12);
   } else {
-    pool = shuffle(SRC[topicId].map(q => ({ ...q, cat: topicId })));
+    pool = shuffle((SRC[topicId] || []).map(q => ({ ...q, cat: topicId })));
   }
-  state = { topic: topicId, mode, qs: pool, idx: 0, score: 0, streak: 0, best: 0, wrongs: [], answers: [], built: [] };
+  state = { ...state, topic: topicId, mode, qs: pool, idx: 0, score: 0, streak: 0, best: 0, wrongs: [], answers: [], built: [] };
   show(game);
   renderQuestion();
 }
@@ -523,7 +576,7 @@ function start(topicId, mode) {
 function hud() {
   const q = state.qs[state.idx];
   const t = topicOf(q.cat);
-  $("badge").textContent = t.name;
+  $("badge").textContent = state.level + " · " + t.name;
   $("badge").style.background = t.soft;
   $("hudScore").textContent = `Pergunta ${state.idx + 1} de ${state.qs.length} · ⭐ ${state.score}`;
   $("barFill").style.width = Math.round((state.idx / state.qs.length) * 100) + "%";
@@ -541,7 +594,7 @@ function renderQuiz() {
   const q = state.qs[state.idx];
   const letters = ["A", "B", "C", "D"];
   $("qcard").innerHTML = `
-    <p class="qtext">${q.q.replace("___", '<span class="blank">&nbsp;</span>')}</p>
+    <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
     <div class="opts">${q.opts.map((o, i) =>
       `<button class="opt" data-i="${i}"><span class="key">${letters[i]}</span>${esc(o)}</button>`).join("")}</div>
     <div id="feedback"></div>
@@ -618,7 +671,7 @@ function renderBuild() {
 function renderType() {
   const q = state.qs[state.idx];
   $("qcard").innerHTML = `
-    <p class="qtext">${q.q.replace("___", '<span class="blank">&nbsp;</span>')}</p>
+    <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
     <p class="hint">💡 Dica: <b>${esc(q.hint)}</b></p>
     <div class="type-row">
       <input class="type-input" id="typeInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Digite aqui…" aria-label="Sua resposta">
@@ -704,7 +757,25 @@ function showResult() {
   $("medal").textContent = medal;
   $("finalMsg").textContent = msg;
   const modeName = MODES.find(m => m.id === state.mode).name;
-  $("finalSub").textContent = `${modeName} · ${pct}% de acertos · melhor sequência: ${state.best}`;
+  $("finalSub").textContent = `${state.level} · ${modeName} · ${pct}% de acertos · melhor sequência: ${state.best}`;
+
+  // Atualiza progresso local e verifica desbloqueio
+  $("unlockMsg").innerHTML = "";
+  if (state.topic !== "mix") {
+    const prog = getProg();
+    const before = prog[state.topic] || 0;
+    if (pct > before) { prog[state.topic] = pct; setProg(prog); }
+    const idx = NIVEIS.findIndex(n => n.id === state.level);
+    const nextLevel = NIVEIS[idx + 1];
+    if (nextLevel && CONFIG.desbloqueio) {
+      const wasLocked = before < CONFIG.pctMinimo;
+      if (levelUnlocked(nextLevel.id) && wasLocked && pct >= CONFIG.pctMinimo) {
+        $("unlockMsg").innerHTML = `<span class="unlock">🔓 Nível ${nextLevel.id} desbloqueado!</span>`;
+        confettiBurst();
+      }
+    }
+  }
+
   saveGameToCloud(pct, total, modeName);
 
   const rev = $("review");
@@ -717,16 +788,11 @@ function showResult() {
 
   $("againBtn").onclick = () => start(state.topic, state.mode);
   $("modeBtn").onclick = () => openModes(state.topic);
-  $("menuBtn").onclick = () => {
-    $("subtitle").textContent = "Escolha um tema para começar. Boa sorte!";
-    show(menu);
-  };
+  $("menuBtn").onclick = () => openLevel(state.level);
 }
 
 // ============================================================
 // CONFIGURAÇÃO DO FIREBASE
-// Cole aqui o objeto firebaseConfig do seu projeto
-// (Console do Firebase → Configurações do projeto → Seus apps)
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCOstRpiRu8QzPRpajdLzKw433aWLy4wc8",
@@ -744,11 +810,6 @@ try {
   db = firebase.firestore();
 } catch (e) { console.warn("Firebase não configurado:", e); }
 
-function slugName(name) {
-  return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50);
-}
-
 async function saveGameToCloud(pct, total, modeName) {
   if (!db || !player) return;
   try {
@@ -763,8 +824,9 @@ async function saveGameToCloud(pct, total, modeName) {
     }, { merge: true });
     await studentRef.collection("games").add({
       date: firebase.firestore.FieldValue.serverTimestamp(),
+      level: state.level,
       topic: state.topic,
-      topicName: topicOf(state.topic === "mix" ? "mix" : state.topic).name,
+      topicName: state.topic === "mix" ? "Modo misto" : topicOf(state.topic).name,
       mode: state.mode,
       modeName: modeName,
       score: state.score,
@@ -778,6 +840,7 @@ async function saveGameToCloud(pct, total, modeName) {
   }
 }
 
+// ---------- Registro do aluno ----------
 function enterName() {
   const val = $("nameInput").value.trim();
   if (val.length < 2) {
@@ -788,8 +851,8 @@ function enterName() {
   player = val;
   try { localStorage.setItem("gq_player", val); } catch (e) {}
   $("playerName").textContent = player;
-  $("subtitle").textContent = "Escolha um tema para começar. Boa sorte!";
-  show(menu);
+  if (!getPlacement()) startPlacementIntro();
+  else renderLevels();
 }
 
 $("nameBtn").addEventListener("click", enterName);
@@ -803,13 +866,12 @@ $("changeName").addEventListener("click", () => {
   $("nameInput").focus();
 });
 
-renderMenu();
 try { player = localStorage.getItem("gq_player"); } catch (e) {}
 if (player) {
   $("playerName").textContent = player;
-  show(menu);
+  if (!getPlacement()) startPlacementIntro();
+  else renderLevels();
 } else {
-  $("subtitle").textContent = "Identifique-se para começar";
   show(nameScreen);
 }
 </script>
