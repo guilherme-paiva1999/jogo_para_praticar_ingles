@@ -12,7 +12,10 @@ const CONFIG = { desbloqueio: true, pctMinimo: 70, temasMinimos: 3 };
 const NIVEIS = [
   { id: "A1", name: "A1 · Iniciante", desc: "Fundamentos: to be, presente, artigos" },
   { id: "A2", name: "A2 · Básico", desc: "Passado, comparativos, futuro" },
-  { id: "B1", name: "B1 · Intermediário", desc: "Present perfect, condicionais, passiva" }
+  { id: "B1", name: "B1 · Intermediário", desc: "Present perfect, condicionais, passiva" },
+  { id: "B2", name: "B2 · Intermediário alto", desc: "Past perfect, reported speech, wish" },
+  { id: "C1", name: "C1 · Avançado", desc: "Inversões, modais no passado, subjuntivo" },
+  { id: "C2", name: "C2 · Proficiência", desc: "Condicionais mistas, participle clauses" }
 ];
 
 const TOPICS = [
@@ -36,7 +39,28 @@ const TOPICS = [
   { id: "cond2", level: "B1", name: "Condicional 2", sub: "if + passado, would", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
   { id: "passiva", level: "B1", name: "Voz passiva", sub: "is/was + particípio", color: "var(--presimple)", soft: "var(--presimple-soft)" },
   { id: "modaisB1", level: "B1", name: "Might / must / could", sub: "dedução e possibilidade", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
-  { id: "usedto", level: "B1", name: "Used to", sub: "hábitos do passado", color: "var(--pastcont)", soft: "var(--pastcont-soft)" }
+  { id: "usedto", level: "B1", name: "Used to", sub: "hábitos do passado", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
+  // ---------- B2 ----------
+  { id: "pastperfect", level: "B2", name: "Past perfect", sub: "had + particípio", color: "var(--tobe)", soft: "var(--tobe-soft)" },
+  { id: "cond3", level: "B2", name: "Condicional 3", sub: "if + had, would have", color: "var(--precont)", soft: "var(--precont-soft)" },
+  { id: "reported", level: "B2", name: "Reported speech", sub: "discurso indireto", color: "var(--presimple)", soft: "var(--presimple-soft)" },
+  { id: "relative", level: "B2", name: "Relative clauses", sub: "who · which · whose", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
+  { id: "gerinf", level: "B2", name: "Gerúndio vs infinitivo", sub: "enjoy doing · want to do", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
+  { id: "wish", level: "B2", name: "Wish / if only", sub: "desejos e arrependimentos", color: "var(--tobe)", soft: "var(--tobe-soft)" },
+  // ---------- C1 ----------
+  { id: "inversion", level: "C1", name: "Inversões", sub: "Never have I...", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
+  { id: "cleft", level: "C1", name: "Cleft sentences", sub: "It was... that / What... is", color: "var(--precont)", soft: "var(--precont-soft)" },
+  { id: "modalpast", level: "C1", name: "Modais no passado", sub: "must have · should have", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
+  { id: "passadv", level: "C1", name: "Passiva avançada", sub: "is said to · had it done", color: "var(--tobe)", soft: "var(--tobe-soft)" },
+  { id: "conectivos", level: "C1", name: "Conectivos", sub: "despite · although · however", color: "var(--presimple)", soft: "var(--presimple-soft)" },
+  { id: "subjunctive", level: "C1", name: "Subjuntivo", sub: "suggest that he be...", color: "var(--precont)", soft: "var(--precont-soft)" },
+  // ---------- C2 ----------
+  { id: "mixedcond", level: "C2", name: "Condicionais mistas", sub: "passado + presente", color: "var(--tobe)", soft: "var(--tobe-soft)" },
+  { id: "participle", level: "C2", name: "Participle clauses", sub: "Having finished...", color: "var(--precont)", soft: "var(--precont-soft)" },
+  { id: "inversioncond", level: "C2", name: "Condicionais invertidas", sub: "Had I known...", color: "var(--pastcont)", soft: "var(--pastcont-soft)" },
+  { id: "hadbetter", level: "C2", name: "Rather / had better", sub: "preferência e conselho", color: "var(--presimple)", soft: "var(--presimple-soft)" },
+  { id: "futureperf", level: "C2", name: "Future perfect", sub: "will have done", color: "var(--pastsimple)", soft: "var(--pastsimple-soft)" },
+  { id: "phrasal", level: "C2", name: "Phrasal verbs", sub: "put off · give up · run out", color: "var(--precont)", soft: "var(--precont-soft)" }
 ];
 
 // ============================================================
@@ -207,6 +231,150 @@ const QUIZ = {
     { q: "He didn't ___ like vegetables.", opts: ["use to","used to","uses to","using to"], a: 0, ex: "Negativa: didn't use to (sem -d)." },
     { q: "We ___ go to the beach every summer.", opts: ["used to","use to","are used to","using to"], a: 0, ex: "Afirmativa: used to (com -d)." },
     { q: "My grandmother ___ tell us stories.", opts: ["used to","uses to","use to","using"], a: 0, ex: "Hábito repetido no passado: used to tell." }
+  ],
+  pastperfect: [
+    { q: "When I arrived, the movie ___ already started.", opts: ["had","has","was","did"], a: 0, ex: "Ação anterior a outra no passado: had + particípio." },
+    { q: "She had never ___ sushi before that day.", opts: ["eaten","ate","eat","eating"], a: 0, ex: "Past perfect usa o particípio: eaten." },
+    { q: "By the time we got there, they ___ everything.", opts: ["had eaten","have eaten","eat","are eating"], a: 0, ex: "'By the time' + past perfect: had eaten." },
+    { q: "He was tired because he ___ all night.", opts: ["had worked","has worked","is working","work"], a: 0, ex: "Causa anterior: had worked." },
+    { q: "I realized I ___ my wallet at home.", opts: ["had left","have left","leave","am leaving"], a: 0, ex: "Ação anterior a 'realized': had left." },
+    { q: "After she ___ her homework, she went out.", opts: ["had finished","finishes","has finished","finish"], a: 0, ex: "'After' + ação anterior: had finished." }
+  ],
+  cond3: [
+    { q: "If I had studied, I ___ passed the exam.", opts: ["would have","will have","would","had"], a: 0, ex: "3ª condicional: if + had..., would have + particípio." },
+    { q: "If she ___ earlier, she wouldn't have missed the bus.", opts: ["had left","left","would leave","leaves"], a: 0, ex: "Parte do 'if': had + particípio." },
+    { q: "We would have gone to the party if we ___ invited.", opts: ["had been","were","have been","are"], a: 0, ex: "Passiva na 3ª condicional: had been invited." },
+    { q: "If you had told me, I ___ you.", opts: ["would have helped","would help","helped","will help"], a: 0, ex: "Resultado irreal no passado: would have helped." },
+    { q: "He ___ the accident if he had driven slowly.", opts: ["would have avoided","would avoid","avoided","avoids"], a: 0, ex: "Would have + particípio: would have avoided." },
+    { q: "___ you have come if I had called you?", opts: ["Would","Will","Did","Do"], a: 0, ex: "Pergunta na 3ª condicional: Would you have...?" }
+  ],
+  reported: [
+    { q: "Direto: 'I am tired.' → She said she ___ tired.", opts: ["was","is","were","be"], a: 0, ex: "No discurso indireto, o tempo 'volta': am → was." },
+    { q: "He said he ___ help me the next day.", opts: ["would","will","can","shall"], a: 0, ex: "Will vira would no indireto." },
+    { q: "Direto: 'I live in London.' → She told me she ___ in London.", opts: ["lived","lives","is living","live"], a: 0, ex: "Present simple vira past simple: lived." },
+    { q: "They said they ___ the movie the night before.", opts: ["had seen","have seen","see","are seeing"], a: 0, ex: "Past simple vira past perfect: had seen." },
+    { q: "He asked me where I ___.", opts: ["lived","live","do live","living"], a: 0, ex: "Pergunta indireta sem inversão: where I lived." },
+    { q: "She asked ___ I was okay.", opts: ["if","that","what","do"], a: 0, ex: "Pergunta sim/não no indireto usa 'if': asked if..." }
+  ],
+  relative: [
+    { q: "The man ___ lives next door is a doctor.", opts: ["who","which","whose","what"], a: 0, ex: "Pessoa: who." },
+    { q: "The book ___ I bought is great.", opts: ["which","who","whose","where"], a: 0, ex: "Coisa: which (ou that)." },
+    { q: "The girl ___ bike was stolen is crying.", opts: ["whose","who","which","that"], a: 0, ex: "Posse: whose." },
+    { q: "The city ___ I was born is beautiful.", opts: ["where","which","who","whose"], a: 0, ex: "Lugar: where." },
+    { q: "The people ___ we met were friendly.", opts: ["who","whose","which","where"], a: 0, ex: "Pessoas: who (ou that)." },
+    { q: "That's the reason ___ I called you.", opts: ["why","which","who","whose"], a: 0, ex: "Motivo: the reason why." }
+  ],
+  gerinf: [
+    { q: "I enjoy ___ soccer.", opts: ["playing","to play","play","played"], a: 0, ex: "'Enjoy' pede gerúndio: enjoy playing." },
+    { q: "She wants ___ a doctor.", opts: ["to be","being","be","been"], a: 0, ex: "'Want' pede infinitivo com to: wants to be." },
+    { q: "He finished ___ the report.", opts: ["writing","to write","write","wrote"], a: 0, ex: "'Finish' pede gerúndio: finished writing." },
+    { q: "They decided ___ abroad.", opts: ["to travel","traveling","travel","traveled"], a: 0, ex: "'Decide' pede infinitivo: decided to travel." },
+    { q: "I'm interested in ___ languages.", opts: ["learning","to learn","learn","learned"], a: 0, ex: "Depois de preposição, sempre -ing: in learning." },
+    { q: "She stopped ___ years ago.", opts: ["smoking","to smoke","smoke","smoked"], a: 0, ex: "Stop + -ing = parar de fazer: stopped smoking." }
+  ],
+  wish: [
+    { q: "I wish I ___ taller.", opts: ["were","am","will be","would be"], a: 0, ex: "Desejo no presente: wish + passado (were)." },
+    { q: "She wishes she ___ more money.", opts: ["had","has","have","will have"], a: 0, ex: "Wish + passado: had." },
+    { q: "I wish I ___ studied harder. (arrependimento)", opts: ["had","have","would","was"], a: 0, ex: "Arrependimento: wish + past perfect (had studied)." },
+    { q: "He wishes he ___ speak Japanese.", opts: ["could","can","will","is"], a: 0, ex: "Habilidade desejada: wish + could." },
+    { q: "I wish you ___ stop making noise!", opts: ["would","will","can","are"], a: 0, ex: "Irritação com hábito alheio: wish + would." },
+    { q: "If only I ___ known earlier!", opts: ["had","have","would","was"], a: 0, ex: "'If only' + past perfect: had known." }
+  ],
+  inversion: [
+    { q: "Never ___ such a beautiful place.", opts: ["have I seen","I have seen","I saw","did I saw"], a: 0, ex: "Advérbio negativo no início inverte: Never have I seen." },
+    { q: "Rarely ___ so hard.", opts: ["does he work","he works","he does work","works he"], a: 0, ex: "Rarely + inversão: does he work." },
+    { q: "Not only ___ late, but he also forgot the documents.", opts: ["was he","he was","he is","is"], a: 0, ex: "Not only + inversão: was he." },
+    { q: "Little ___ that everything would change.", opts: ["did she know","she knew","she did know","knew she"], a: 0, ex: "Little + inversão: did she know." },
+    { q: "Under no circumstances ___ leave this room.", opts: ["should you","you should","you must to","should"], a: 0, ex: "Expressão negativa + inversão: should you." },
+    { q: "No sooner ___ arrived than it started to rain.", opts: ["had we","we had","we have","did we"], a: 0, ex: "No sooner + past perfect invertido: had we arrived." }
+  ],
+  cleft: [
+    { q: "___ was John that broke the window.", opts: ["It","There","That","What"], a: 0, ex: "Ênfase no sujeito: It was John that..." },
+    { q: "___ I need is a long vacation.", opts: ["What","That","It","Which"], a: 0, ex: "Ênfase no objeto: What I need is..." },
+    { q: "It was in 2010 ___ we first met.", opts: ["that","when it","which","who"], a: 0, ex: "It was + info + that: that we first met." },
+    { q: "What she did ___ call the police.", opts: ["was","is that","did","does"], a: 0, ex: "What + sujeito + did + was: was (to) call." },
+    { q: "It ___ my brother who found the keys.", opts: ["was","is what","did","has"], a: 0, ex: "It was + pessoa + who." },
+    { q: "___ matters most is your health.", opts: ["What","It","That","Which"], a: 0, ex: "What como sujeito: What matters most is..." }
+  ],
+  modalpast: [
+    { q: "The ground is wet. It ___ rained last night.", opts: ["must have","must","should have","can have"], a: 0, ex: "Dedução sobre o passado: must have + particípio." },
+    { q: "He ___ the train — he left very late.", opts: ["might have missed","might miss","must miss","misses"], a: 0, ex: "Possibilidade no passado: might have missed." },
+    { q: "You ___ told me! I waited for hours.", opts: ["should have","must have","might","would"], a: 0, ex: "Crítica sobre o passado: should have told." },
+    { q: "She ___ done it — she was with me all day.", opts: ["can't have","mustn't have","shouldn't","didn't have"], a: 0, ex: "Dedução negativa no passado: can't have done." },
+    { q: "They ___ arrived by now, the flight landed at noon.", opts: ["should have","can have","might","must to"], a: 0, ex: "Expectativa: should have arrived." },
+    { q: "I ___ left my keys at the office. I can't find them.", opts: ["must have","should","can have","would"], a: 0, ex: "Dedução lógica: must have left." }
+  ],
+  passadv: [
+    { q: "He is said ___ very rich.", opts: ["to be","that he is","being","be"], a: 0, ex: "Passiva impessoal: is said to be." },
+    { q: "It ___ that the economy will improve.", opts: ["is believed","believes","is believing","believed"], a: 0, ex: "It is believed that..." },
+    { q: "I had my car ___ yesterday.", opts: ["repaired","repair","to repair","repairing"], a: 0, ex: "Causativa: have + objeto + particípio." },
+    { q: "She got her hair ___ last week.", opts: ["cut","cutted","to cut","cutting"], a: 0, ex: "Get + objeto + particípio: got her hair cut." },
+    { q: "The suspect is thought ___ the country.", opts: ["to have left","that left","leaving","left"], a: 0, ex: "Passiva sobre o passado: is thought to have left." },
+    { q: "We're having our house ___ next month.", opts: ["painted","paint","to paint","painting"], a: 0, ex: "Causativa: having our house painted." }
+  ],
+  conectivos: [
+    { q: "___ the rain, we went out.", opts: ["Despite","Although","However","Because"], a: 0, ex: "Despite + substantivo: Despite the rain." },
+    { q: "___ it was late, she kept working.", opts: ["Although","Despite","However","Therefore"], a: 0, ex: "Although + frase completa." },
+    { q: "He studied hard; ___, he failed the test.", opts: ["however","although","despite","because"], a: 0, ex: "Contraste entre frases: however." },
+    { q: "She was tired. ___, she finished the report.", opts: ["Nevertheless","Although","Despite","Because of"], a: 0, ex: "Contraste formal: Nevertheless." },
+    { q: "___ of the traffic, we arrived on time.", opts: ["In spite","Despite","Although","However"], a: 0, ex: "In spite OF + substantivo." },
+    { q: "The project failed ___ the lack of funding.", opts: ["due to","although","however","despite of"], a: 0, ex: "Causa: due to + substantivo." }
+  ],
+  subjunctive: [
+    { q: "I suggest that he ___ a doctor.", opts: ["see","sees","saw","seeing"], a: 0, ex: "Subjuntivo: verbo base mesmo com he/she (see)." },
+    { q: "It's essential that she ___ on time.", opts: ["be","is","was","been"], a: 0, ex: "Subjuntivo do to be: be." },
+    { q: "The teacher demanded that we ___ quiet.", opts: ["be","are","were","being"], a: 0, ex: "Demand that + subjuntivo: be quiet." },
+    { q: "I recommend that he ___ more water.", opts: ["drink","drinks","drank","drinking"], a: 0, ex: "Recommend that + verbo base: drink." },
+    { q: "It's important that every student ___ the rules.", opts: ["follow","follows","followed","following"], a: 0, ex: "Subjuntivo: follow (sem -s)." },
+    { q: "She insisted that the meeting ___ postponed.", opts: ["be","is","was","will be"], a: 0, ex: "Insist that + subjuntivo: be postponed." }
+  ],
+  mixedcond: [
+    { q: "If I had studied medicine, I ___ a doctor now.", opts: ["would be","would have been","will be","am"], a: 0, ex: "Passado irreal + resultado presente: would be... now." },
+    { q: "If she weren't so shy, she ___ spoken at the meeting yesterday.", opts: ["would have","would","will have","had"], a: 0, ex: "Condição presente + resultado passado: would have spoken." },
+    { q: "If we had caught that flight, we ___ in Paris right now.", opts: ["would be","would have been","are","will be"], a: 0, ex: "Resultado no presente: would be... right now." },
+    { q: "If he ___ the job back then, he would be rich today.", opts: ["had taken","took","would take","takes"], a: 0, ex: "Condição no passado: had taken." },
+    { q: "If I ___ afraid of heights, I would have gone skydiving.", opts: ["weren't","wouldn't be","am not","won't be"], a: 0, ex: "Condição presente (característica): weren't." },
+    { q: "She would have called you if she ___ your number.", opts: ["knew","knows","would know","will know"], a: 0, ex: "Condição presente: if she knew (agora)." }
+  ],
+  participle: [
+    { q: "___ his homework, he went to bed.", opts: ["Having finished","Finished","To finish","Finish"], a: 0, ex: "Ação anterior: Having + particípio." },
+    { q: "___ from above, the city looks tiny.", opts: ["Seen","Seeing","To see","See"], a: 0, ex: "Sentido passivo: Seen from above." },
+    { q: "___ what to say, she remained silent.", opts: ["Not knowing","Not known","No knowing","Not to know"], a: 0, ex: "Negativa: Not + -ing." },
+    { q: "___ in 1900, the building is very old.", opts: ["Built","Building","To build","Having building"], a: 0, ex: "Passivo: Built in 1900 (= que foi construído)." },
+    { q: "___ the news, she started to cry.", opts: ["Hearing","Heard","To hear","Hear"], a: 0, ex: "Ação simultânea/imediata: Hearing the news." },
+    { q: "___ lost the map, we asked for directions.", opts: ["Having","Had","Have","To have"], a: 0, ex: "Ação anterior: Having lost." }
+  ],
+  inversioncond: [
+    { q: "___ I known about the party, I would have gone.", opts: ["Had","If had","Have","Did"], a: 0, ex: "3ª condicional invertida: Had I known = If I had known." },
+    { q: "___ you need any help, call me.", opts: ["Should","If should","Would","Had"], a: 0, ex: "1ª condicional formal: Should you need = If you need." },
+    { q: "___ I in your position, I would accept the offer.", opts: ["Were","Was","Am","Be"], a: 0, ex: "2ª condicional invertida: Were I = If I were." },
+    { q: "Had she studied, she ___ passed.", opts: ["would have","would","will have","had"], a: 0, ex: "Resultado: would have passed." },
+    { q: "Should the flight ___ delayed, we will notify you.", opts: ["be","is","was","been"], a: 0, ex: "Should + sujeito + verbo base: be delayed." },
+    { q: "Were he ___ ask me, I would say yes.", opts: ["to","will","would","can"], a: 0, ex: "Were + sujeito + to + verbo: Were he to ask." }
+  ],
+  hadbetter: [
+    { q: "You ___ better see a doctor.", opts: ["had","would","should","have"], a: 0, ex: "Conselho forte: had better." },
+    { q: "I ___ rather stay home tonight.", opts: ["would","had","should","will"], a: 0, ex: "Preferência: would rather." },
+    { q: "She'd rather ___ tea than coffee.", opts: ["drink","drinks","drinking","to drink"], a: 0, ex: "Would rather + verbo base: drink." },
+    { q: "You had better ___ late again!", opts: ["not be","don't be","not to be","no be"], a: 0, ex: "Negativa: had better not + verbo." },
+    { q: "I'd rather you ___ smoke here.", opts: ["didn't","don't","won't","not"], a: 0, ex: "Preferência sobre outra pessoa: I'd rather you didn't." },
+    { q: "It's time we ___ home.", opts: ["went","go","will go","going"], a: 0, ex: "It's time + passado: went." }
+  ],
+  futureperf: [
+    { q: "By 2030, I ___ working here for 20 years.", opts: ["will have been","will be","will have","am"], a: 0, ex: "Future perfect continuous: will have been working." },
+    { q: "By next month, she ___ her degree.", opts: ["will have finished","will finish","finishes","has finished"], a: 0, ex: "Concluído até um ponto futuro: will have finished." },
+    { q: "This time tomorrow, we ___ over the Atlantic.", opts: ["will be flying","will fly","fly","are flying"], a: 0, ex: "Em progresso no futuro: will be flying." },
+    { q: "By the time you arrive, I ___ dinner.", opts: ["will have made","will make","make","made"], a: 0, ex: "By the time + future perfect: will have made." },
+    { q: "In June, they ___ married for ten years.", opts: ["will have been","will be","are","were"], a: 0, ex: "Duração até um ponto futuro: will have been married." },
+    { q: "Don't call at 8 — I ___ the match.", opts: ["will be watching","will watch","watch","watched"], a: 0, ex: "Ação em progresso num momento futuro: will be watching." }
+  ],
+  phrasal: [
+    { q: "The meeting was ___ until Friday.", opts: ["put off","put on","put up","put in"], a: 0, ex: "Put off = adiar." },
+    { q: "She ___ the story — it wasn't true.", opts: ["made up","made off","made in","made over"], a: 0, ex: "Make up = inventar." },
+    { q: "I can't ___ this noise anymore!", opts: ["put up with","put off","put on","put away"], a: 0, ex: "Put up with = tolerar." },
+    { q: "He ___ smoking last year.", opts: ["gave up","gave in","gave away","gave out"], a: 0, ex: "Give up = parar/desistir." },
+    { q: "The plane ___ on time.", opts: ["took off","took up","took in","took over"], a: 0, ex: "Take off = decolar." },
+    { q: "We've ___ of milk.", opts: ["run out","run over","run up","run into"], a: 0, ex: "Run out of = acabar (o estoque)." }
   ]
 };
 
@@ -332,6 +500,114 @@ const BUILD = {
     { s: "She used to live in London", ex: "'Used to' é igual para todos os sujeitos." },
     { s: "Did you use to have a dog ?", ex: "Pergunta: Did + use to (sem -d)." },
     { s: "We didn't use to eat fast food", ex: "Negativa: didn't use to (sem -d)." }
+  ],
+  pastperfect: [
+    { s: "The train had already left when we arrived", ex: "Ação anterior: had left." },
+    { s: "She had never seen snow before", ex: "Had + never + particípio." },
+    { s: "By 2010 they had moved to Spain", ex: "'By' + past perfect." },
+    { s: "He had studied English before moving abroad", ex: "Ação anterior a outra: had studied." }
+  ],
+  cond3: [
+    { s: "If I had known I would have called you", ex: "If + had..., would have + particípio." },
+    { s: "She would have won if she had trained more", ex: "Resultado irreal no passado." },
+    { s: "We would have gone if it hadn't rained", ex: "Negativa no if: hadn't rained." },
+    { s: "If you had asked I would have helped", ex: "3ª condicional completa." }
+  ],
+  reported: [
+    { s: "She said she was very tired", ex: "Am/is vira was no indireto." },
+    { s: "He told me he would call later", ex: "Will vira would." },
+    { s: "They said they had finished the work", ex: "Past simple vira past perfect." },
+    { s: "She asked me where I lived", ex: "Pergunta indireta: sem inversão." }
+  ],
+  relative: [
+    { s: "The man who called you is my uncle", ex: "Pessoa: who." },
+    { s: "The house where I grew up was sold", ex: "Lugar: where." },
+    { s: "The book which you lent me is amazing", ex: "Coisa: which." },
+    { s: "The woman whose car broke down needed help", ex: "Posse: whose." }
+  ],
+  gerinf: [
+    { s: "I enjoy reading before bed", ex: "Enjoy + -ing." },
+    { s: "She wants to learn French", ex: "Want + to + verbo." },
+    { s: "He avoided answering the question", ex: "Avoid + -ing." },
+    { s: "They agreed to help us", ex: "Agree + to + verbo." }
+  ],
+  wish: [
+    { s: "I wish I were on vacation", ex: "Desejo presente: wish + were." },
+    { s: "She wishes she had more time", ex: "Wish + passado: had." },
+    { s: "I wish I had studied medicine", ex: "Arrependimento: wish + had + particípio." },
+    { s: "If only he could come with us", ex: "If only + could." }
+  ],
+  inversion: [
+    { s: "Never have I seen such a mess", ex: "Never + auxiliar + sujeito." },
+    { s: "Rarely does she make mistakes", ex: "Rarely + does + sujeito + verbo base." },
+    { s: "Little did he know the truth", ex: "Little + did + sujeito + verbo base." },
+    { s: "Not only was it cold but also windy", ex: "Not only + inversão." }
+  ],
+  cleft: [
+    { s: "It was Maria who solved the problem", ex: "It was + pessoa + who." },
+    { s: "What I want is some peace", ex: "What + frase + is." },
+    { s: "It was yesterday that we arrived", ex: "It was + tempo + that." },
+    { s: "What he needs is a good rest", ex: "Ênfase com what... is." }
+  ],
+  modalpast: [
+    { s: "You should have called me earlier", ex: "Crítica: should have + particípio." },
+    { s: "She must have forgotten the meeting", ex: "Dedução: must have + particípio." },
+    { s: "He can't have finished so quickly", ex: "Impossibilidade: can't have + particípio." },
+    { s: "They might have taken the wrong bus", ex: "Possibilidade: might have + particípio." }
+  ],
+  passadv: [
+    { s: "He is said to be a genius", ex: "Passiva impessoal: is said to be." },
+    { s: "I had my phone repaired yesterday", ex: "Causativa: had + objeto + particípio." },
+    { s: "She is believed to live abroad", ex: "Is believed to + verbo." },
+    { s: "They got the roof fixed last month", ex: "Get + objeto + particípio." }
+  ],
+  conectivos: [
+    { s: "Despite the cold we went swimming", ex: "Despite + substantivo." },
+    { s: "Although he was tired he kept working", ex: "Although + frase completa." },
+    { s: "In spite of the rain they played the match", ex: "In spite of + substantivo." },
+    { s: "Due to the strike the flight was cancelled", ex: "Due to + causa." }
+  ],
+  subjunctive: [
+    { s: "I suggest that he take a break", ex: "Suggest that + verbo base (take)." },
+    { s: "It is vital that she be informed", ex: "Subjuntivo do to be: be." },
+    { s: "They demanded that he apologize immediately", ex: "Demand that + verbo base." },
+    { s: "I recommend that you see a doctor", ex: "Recommend that + verbo base." }
+  ],
+  mixedcond: [
+    { s: "If I had saved money I would be rich now", ex: "Passado irreal + presente: would be now." },
+    { s: "She would be here if she had caught the train", ex: "Resultado presente + condição passada." },
+    { s: "If he were taller he would have joined the team", ex: "Condição presente + resultado passado." },
+    { s: "If they had left earlier they would be home now", ex: "Mistura de tempos: had left + would be." }
+  ],
+  participle: [
+    { s: "Having finished the report she went home", ex: "Having + particípio = ação anterior." },
+    { s: "Seen from the plane the island looks small", ex: "Particípio passivo: Seen from..." },
+    { s: "Not knowing the answer he kept quiet", ex: "Negativa: Not + -ing." },
+    { s: "Having lost his keys he called a locksmith", ex: "Having lost = como tinha perdido." }
+  ],
+  inversioncond: [
+    { s: "Had I known I would have helped", ex: "Had I known = If I had known." },
+    { s: "Should you need anything just ask", ex: "Should you need = If you need." },
+    { s: "Were I rich I would travel the world", ex: "Were I = If I were." },
+    { s: "Had they trained harder they would have won", ex: "3ª condicional invertida." }
+  ],
+  hadbetter: [
+    { s: "You had better take an umbrella", ex: "Had better + verbo base." },
+    { s: "I would rather walk than drive", ex: "Would rather + verbo... than." },
+    { s: "It's time we went to bed", ex: "It's time + passado." },
+    { s: "She would rather not talk about it", ex: "Negativa: would rather not." }
+  ],
+  futureperf: [
+    { s: "By 2030 she will have graduated", ex: "Will have + particípio." },
+    { s: "This time tomorrow I will be travelling", ex: "Will be + -ing." },
+    { s: "By December we will have moved house", ex: "Concluído até um ponto futuro." },
+    { s: "They will have finished the bridge by next year", ex: "Future perfect + by." }
+  ],
+  phrasal: [
+    { s: "The concert was called off yesterday", ex: "Call off = cancelar." },
+    { s: "She turned down the job offer", ex: "Turn down = recusar." },
+    { s: "I came across an old photo", ex: "Come across = encontrar por acaso." },
+    { s: "He gave up eating sugar", ex: "Give up + -ing = parar de." }
   ]
 };
 
@@ -467,5 +743,113 @@ const TYPE = {
     { q: "Did you ___ to live here?", hint: "pergunta (sem -d)", ans: ["use"], ex: "Pergunta: did you use to." },
     { q: "He didn't ___ to like coffee.", hint: "negativa (sem -d)", ans: ["use"], ex: "Negativa: didn't use to." },
     { q: "They ___ to visit us every Sunday.", hint: "costumavam", ans: ["used"], ex: "Afirmativa: used to." }
+  ],
+  pastperfect: [
+    { q: "When I got home, everyone had already ___.", hint: "verbo: leave · particípio", ans: ["left"], ex: "Had + particípio: left." },
+    { q: "She had ___ that movie three times before.", hint: "verbo: see · particípio", ans: ["seen"], ex: "Particípio de see: seen." },
+    { q: "They had ___ dinner before we arrived.", hint: "verbo: finish", ans: ["finished"], ex: "Had finished." },
+    { q: "I ___ never been there before that trip.", hint: "auxiliar", ans: ["had"], ex: "Past perfect: had been." }
+  ],
+  cond3: [
+    { q: "If I had studied, I ___ have passed.", hint: "hipotético", ans: ["would"], ex: "Would have passed." },
+    { q: "If she had ___ the truth, she would have told us.", hint: "verbo: know · particípio", ans: ["known"], ex: "Had known." },
+    { q: "They would have ___ if you had invited them.", hint: "verbo: come · particípio", ans: ["come"], ex: "Would have come." },
+    { q: "If we ___ left earlier, we would have arrived on time.", hint: "auxiliar", ans: ["had"], ex: "If we had left." }
+  ],
+  reported: [
+    { q: "Direto: 'I like pizza.' → He said he ___ pizza.", hint: "like · um tempo atrás", ans: ["liked"], ex: "Like vira liked." },
+    { q: "Direto: 'I will help.' → She said she ___ help.", hint: "will vira...", ans: ["would"], ex: "Will vira would." },
+    { q: "Direto: 'I have finished.' → He said he ___ finished.", hint: "auxiliar", ans: ["had"], ex: "Have vira had." },
+    { q: "She asked me ___ I was from.", hint: "pergunta indireta de lugar", ans: ["where"], ex: "Asked me where I was from." }
+  ],
+  relative: [
+    { q: "The boy ___ won the prize is my cousin.", hint: "pessoa", ans: ["who","that"], ex: "Pessoa: who." },
+    { q: "The dog ___ tail is white is mine.", hint: "posse", ans: ["whose"], ex: "Posse: whose." },
+    { q: "The restaurant ___ we had dinner was expensive.", hint: "lugar", ans: ["where"], ex: "Lugar: where." },
+    { q: "The phone ___ I bought yesterday stopped working.", hint: "coisa", ans: ["which","that"], ex: "Coisa: which/that." }
+  ],
+  gerinf: [
+    { q: "I can't stand ___ in traffic.", hint: "verbo: wait · -ing", ans: ["waiting"], ex: "Can't stand + -ing." },
+    { q: "She hopes ___ the exam.", hint: "verbo: pass · com to (2 palavras)", ans: ["to pass"], ex: "Hope + to + verbo." },
+    { q: "He suggested ___ to the beach.", hint: "verbo: go · -ing", ans: ["going"], ex: "Suggest + -ing." },
+    { q: "We plan ___ a new house.", hint: "verbo: buy · com to (2 palavras)", ans: ["to buy"], ex: "Plan + to + verbo." }
+  ],
+  wish: [
+    { q: "I wish I ___ rich.", hint: "to be · passado", ans: ["were","was"], ex: "Wish + were." },
+    { q: "She wishes she ___ the answer.", hint: "verbo: know · passado", ans: ["knew"], ex: "Wish + passado: knew." },
+    { q: "I wish I ___ gone to the party.", hint: "arrependimento · auxiliar", ans: ["had"], ex: "Wish + had + particípio." },
+    { q: "He wishes he ___ play the guitar.", hint: "habilidade", ans: ["could"], ex: "Wish + could." }
+  ],
+  inversion: [
+    { q: "Never ___ I heard such a story.", hint: "auxiliar", ans: ["have"], ex: "Never have I heard." },
+    { q: "Rarely ___ he arrive late.", hint: "auxiliar", ans: ["does"], ex: "Rarely does he arrive." },
+    { q: "Little ___ she know what was coming.", hint: "auxiliar", ans: ["did"], ex: "Little did she know." },
+    { q: "No sooner ___ I sat down than the phone rang.", hint: "auxiliar", ans: ["had"], ex: "No sooner had I sat down." }
+  ],
+  cleft: [
+    { q: "___ was the manager who made the decision.", hint: "ênfase", ans: ["it"], ex: "It was... who." },
+    { q: "___ I love about this city is the food.", hint: "ênfase", ans: ["what"], ex: "What I love... is." },
+    { q: "It was in Paris ___ they got married.", hint: "conector", ans: ["that"], ex: "It was + lugar + that." },
+    { q: "What she wants ___ to travel the world.", hint: "to be", ans: ["is"], ex: "What she wants is..." }
+  ],
+  modalpast: [
+    { q: "The lights are off. They ___ have gone out.", hint: "dedução", ans: ["must"], ex: "Must have gone." },
+    { q: "You ___ have told me the truth!", hint: "crítica", ans: ["should"], ex: "Should have told." },
+    { q: "She ___ have seen us, it was too dark.", hint: "impossível", ans: ["can't","cannot"], ex: "Can't have seen." },
+    { q: "He might ___ missed the bus.", hint: "auxiliar", ans: ["have"], ex: "Might have missed." }
+  ],
+  passadv: [
+    { q: "He is said ___ be very talented.", hint: "partícula", ans: ["to"], ex: "Is said to be." },
+    { q: "I had my car ___ last week.", hint: "verbo: wash · particípio", ans: ["washed"], ex: "Had my car washed." },
+    { q: "It is ___ that she moved to Japan.", hint: "verbo: believe · particípio", ans: ["believed"], ex: "It is believed that." },
+    { q: "She got her dress ___ for the wedding.", hint: "verbo: make · particípio", ans: ["made"], ex: "Got her dress made." }
+  ],
+  conectivos: [
+    { q: "___ being sick, he went to work.", hint: "contraste + -ing", ans: ["despite"], ex: "Despite + -ing." },
+    { q: "___ it was expensive, she bought it.", hint: "contraste + frase", ans: ["although","though"], ex: "Although + frase." },
+    { q: "He trained hard; ___, he lost the match.", hint: "contraste entre frases", ans: ["however"], ex: "However entre frases." },
+    { q: "The game was cancelled due ___ the storm.", hint: "partícula", ans: ["to"], ex: "Due to + causa." }
+  ],
+  subjunctive: [
+    { q: "I suggest that she ___ early.", hint: "verbo: leave · subjuntivo", ans: ["leave"], ex: "Verbo base: leave." },
+    { q: "It's essential that he ___ present.", hint: "to be · subjuntivo", ans: ["be"], ex: "Subjuntivo: be." },
+    { q: "The judge ordered that the man ___ released.", hint: "to be · subjuntivo", ans: ["be"], ex: "Be released." },
+    { q: "We recommend that she ___ the course.", hint: "verbo: take", ans: ["take"], ex: "Verbo base: take." }
+  ],
+  mixedcond: [
+    { q: "If I had accepted the job, I ___ be in London now.", hint: "hipotético presente", ans: ["would"], ex: "Would be now." },
+    { q: "If she ___ so busy, she would have come yesterday.", hint: "to be · negativa", ans: ["weren't","wasn't"], ex: "If she weren't." },
+    { q: "If we had taken the map, we ___ be lost now.", hint: "negativa", ans: ["wouldn't"], ex: "Wouldn't be lost." },
+    { q: "If he ___ studied harder, he would have a degree today.", hint: "auxiliar", ans: ["had"], ex: "If he had studied." }
+  ],
+  participle: [
+    { q: "___ finished dinner, they watched a movie.", hint: "particípio presente do auxiliar", ans: ["having"], ex: "Having finished." },
+    { q: "___ from a distance, the mountain seems blue.", hint: "verbo: see · particípio", ans: ["seen"], ex: "Seen from a distance." },
+    { q: "Not ___ what to do, she called her mother.", hint: "verbo: know · -ing", ans: ["knowing"], ex: "Not knowing." },
+    { q: "___ in Italy, the car is very stylish.", hint: "verbo: make · particípio", ans: ["made"], ex: "Made in Italy." }
+  ],
+  inversioncond: [
+    { q: "___ I known earlier, I would have come.", hint: "inversão", ans: ["had"], ex: "Had I known." },
+    { q: "___ you have any questions, contact us.", hint: "inversão", ans: ["should"], ex: "Should you have." },
+    { q: "___ I you, I would apologize.", hint: "inversão", ans: ["were"], ex: "Were I you." },
+    { q: "Had she ___ the email, she would have replied.", hint: "verbo: see · particípio", ans: ["seen"], ex: "Had she seen." }
+  ],
+  hadbetter: [
+    { q: "You ___ better hurry up!", hint: "expressão", ans: ["had"], ex: "Had better." },
+    { q: "I'd ___ have pizza than salad.", hint: "preferência", ans: ["rather"], ex: "Would rather... than." },
+    { q: "It's time we ___ home.", hint: "verbo: go · passado", ans: ["went"], ex: "It's time + passado." },
+    { q: "I'd rather you ___ tell anyone.", hint: "negativa · passado", ans: ["didn't"], ex: "I'd rather you didn't." }
+  ],
+  futureperf: [
+    { q: "By 2030, I will ___ finished my studies.", hint: "auxiliar", ans: ["have"], ex: "Will have finished." },
+    { q: "This time tomorrow, she will be ___ to Rome.", hint: "verbo: fly · -ing", ans: ["flying"], ex: "Will be flying." },
+    { q: "By the time you wake up, I will have ___.", hint: "verbo: leave · particípio", ans: ["left"], ex: "Will have left." },
+    { q: "By June, they will have ___ here for a decade.", hint: "verbo: live · particípio", ans: ["lived"], ex: "Will have lived." }
+  ],
+  phrasal: [
+    { q: "Please turn ___ the TV, it's too loud.", hint: "diminuir", ans: ["down"], ex: "Turn down = diminuir." },
+    { q: "We ran ___ of coffee this morning.", hint: "acabar", ans: ["out"], ex: "Run out of = acabar." },
+    { q: "The flight took ___ at noon.", hint: "decolar", ans: ["off"], ex: "Take off = decolar." },
+    { q: "I can't put ___ with this behavior.", hint: "tolerar", ans: ["up"], ex: "Put up with = tolerar." }
   ]
 };
