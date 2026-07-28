@@ -430,6 +430,7 @@ function nextPlacementLevel() {
 function renderPlacementQ() {
   const q = placement.qs[placement.qIdx];
   const lvl = NIVEIS[placement.lvlIdx].id;
+  const order = shuffle(q.opts.map((_, i) => i));
   const letters = ["A", "B", "C", "D"];
   placementScreen.innerHTML = `
     <div class="hud">
@@ -439,18 +440,19 @@ function renderPlacementQ() {
     <div class="bar"><div style="width:${Math.round(placement.lvlIdx / NIVEIS.length * 100)}%;background:var(--ink);height:100%;border-radius:999px"></div></div>
     <div class="qcard">
       <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
-      <div class="opts">${q.opts.map((o, i) =>
-        `<button class="opt" data-i="${i}"><span class="key">${letters[i]}</span>${esc(o)}</button>`).join("")}</div>
+      <div class="opts">${order.map((oi, pos) =>
+        `<button class="opt" data-i="${oi}"><span class="key">${letters[pos]}</span>${esc(q.opts[oi])}</button>`).join("")}</div>
     </div>`;
   placementScreen.querySelectorAll(".opt").forEach(btn =>
     btn.addEventListener("click", () => {
       const i = parseInt(btn.dataset.i);
       const correct = i === q.a;
       if (correct) placement.correct++;
-      placementScreen.querySelectorAll(".opt").forEach((b, bi) => {
+      placementScreen.querySelectorAll(".opt").forEach(b => {
+        const oi = parseInt(b.dataset.i);
         b.disabled = true;
-        if (bi === q.a) b.classList.add("correct");
-        else if (bi === i) b.classList.add("wrong");
+        if (oi === q.a) b.classList.add("correct");
+        else if (oi === i) b.classList.add("wrong");
         else b.classList.add("faded");
       });
       setTimeout(() => {
@@ -614,11 +616,12 @@ function renderQuestion() {
 
 function renderQuiz() {
   const q = state.qs[state.idx];
+  const order = shuffle(q.opts.map((_, i) => i));
   const letters = ["A", "B", "C", "D"];
   $("qcard").innerHTML = `
     <p class="qtext">${esc(q.q).replace("___", '<span class="blank">&nbsp;</span>')}</p>
-    <div class="opts">${q.opts.map((o, i) =>
-      `<button class="opt" data-i="${i}"><span class="key">${letters[i]}</span>${esc(o)}</button>`).join("")}</div>
+    <div class="opts">${order.map((oi, pos) =>
+      `<button class="opt" data-i="${oi}"><span class="key">${letters[pos]}</span>${esc(q.opts[oi])}</button>`).join("")}</div>
     <div id="feedback"></div>
     <button class="btn hidden" id="nextBtn"></button>`;
   $("qcard").querySelectorAll(".opt").forEach(btn =>
@@ -628,10 +631,11 @@ function renderQuiz() {
 function answerQuiz(i) {
   const q = state.qs[state.idx];
   const correct = i === q.a;
-  $("qcard").querySelectorAll(".opt").forEach((b, bi) => {
+  $("qcard").querySelectorAll(".opt").forEach(b => {
+    const oi = parseInt(b.dataset.i);
     b.disabled = true;
-    if (bi === q.a) b.classList.add("correct");
-    else if (bi === i) b.classList.add("wrong");
+    if (oi === q.a) b.classList.add("correct");
+    else if (oi === i) b.classList.add("wrong");
     else b.classList.add("faded");
   });
   score(correct, q, q.q.replace("___", q.opts[q.a]), q.opts[i]);
@@ -863,15 +867,40 @@ async function saveGameToCloud(pct, total, modeName) {
 }
 
 // ---------- Registro do aluno ----------
-function enterName() {
+async function enterName() {
   const val = $("nameInput").value.trim();
   if (val.length < 2) {
     $("nameError").textContent = "Digite um nome com pelo menos 2 letras.";
     return;
   }
+  const btn = $("nameBtn");
   $("nameError").textContent = "";
+  btn.disabled = true;
+  btn.textContent = "…";
+  let taken = false;
+  if (db) {
+    try {
+      const doc = await db.collection("students").doc(slugName(val)).get();
+      taken = doc.exists;
+    } catch (e) { console.warn("Não foi possível verificar o nome:", e); }
+  }
+  btn.disabled = false;
+  btn.textContent = "Entrar";
+  if (taken) {
+    $("nameError").textContent = `Já existe um aluno chamado "${val}". Adicione algo para diferenciar — por exemplo, um sobrenome ou número: "${val} Silva" ou "${val} 2".`;
+    $("nameInput").focus();
+    return;
+  }
   player = val;
   try { localStorage.setItem("gq_player", val); } catch (e) {}
+  if (db) {
+    try {
+      await db.collection("students").doc(slugName(val)).set({
+        name: val,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch (e) { console.warn("Não foi possível reservar o nome:", e); }
+  }
   $("playerName").textContent = player;
   if (!getPlacement()) startPlacementIntro();
   else renderLevels();
